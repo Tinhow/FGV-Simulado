@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Simulado interativo completo com todas as 70 questões e aba de embasamento teórico oficial da última prova da Dataprev (Banca FGV).">
+  <title>Simulado Oficial Dataprev (FGV) + Embasamento Teórico</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E%3Ctext y=%2226%22 font-size=%2224%22%3E💻%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <span class="logo-badge">DATAPREV</span>
+        <div class="logo-title">
+          <h1>Simulado Oficial FGV &middot; Analista de TI</h1>
+          <p>Última Prova Completa (70 Questões) + Embasamento Teórico Aprofundado</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Cronômetro Oficial de 4h30m -->
+        <div class="timer-box" id="timerBox" title="Tempo oficial de prova FGV: 4 horas e 30 minutos">
+          <span>⏱️</span>
+          <span id="timerDisplay">04:30:00</span>
+        </div>
+
+        <!-- Ajuste de Acessibilidade de Fonte -->
+        <button class="btn-icon" id="fontDecreaseBtn" title="Diminuir tamanho da fonte (A-)">A-</button>
+        <button class="btn-icon" id="fontIncreaseBtn" title="Aumentar tamanho da fonte (A+)">A+</button>
+
+        <!-- Toggle Modo Escuro / Claro -->
+        <button class="btn-icon" id="themeToggleBtn" title="Alternar tema escuro/claro">
+          <span id="themeToggleIcon">🌙</span>
+        </button>
+
+        <!-- Reiniciar Simulado -->
+        <button class="btn-icon" id="resetTestBtn" title="Reiniciar simulado e limpar respostas" style="color:var(--danger);">
+          🔄
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs Bar -->
+  <nav class="app-tabs-nav" aria-label="Navegação do aplicativo">
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="simulado">
+        <span>📝</span> Simulado Completo
+        <span class="badge-counter" id="badgeSimuladoCount">0/70</span>
+      </button>
+      <button class="tab-btn" data-tab="teoria">
+        <span>📚</span> Embasamento Teórico
+      </button>
+      <button class="tab-btn" data-tab="estatisticas">
+        <span>📊</span> Desempenho &amp; Notas
+      </button>
+      <button class="tab-btn" data-tab="erros">
+        <span>❌</span> Caderno de Erros
+        <span class="badge-counter" id="badgeErrorsCount">0</span>
+      </button>
+      <button class="tab-btn" data-tab="sobre">
+        <span>ℹ️</span> Guia do Concurso
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="app-main">
+
+    <!-- ====================================================================
+         ABA 1: SIMULADO INTERATIVO (70 QUESTÕES)
+         ==================================================================== -->
+    <section class="tab-content-panel" id="view-simulado">
+      <!-- Toolbar: Modo de Resolução e Filtros -->
+      <div class="toolbar-card">
+        <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+          <span style="font-size:0.88rem; font-weight:700; color:var(--text-muted);">Modo de Estudo:</span>
+          <div class="mode-selector">
+            <button class="mode-btn active" id="modeTreinoBtn" title="Feedback imediato com gabarito comentado a cada clique">
+              ⚡ Modo Treino (Imediato)
+            </button>
+            <button class="mode-btn" id="modeProvaBtn" title="Cronômetro oficial de 4h30, gabarito revelado apenas após submissão">
+              🎯 Modo Prova Real (Cronometrado)
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <!-- Filtro de Disciplinas Oficiais -->
+          <label for="subjectFilterSelect" class="visually-hidden" style="display:none;">Disciplina:</label>
+          <select class="select-filter" id="subjectFilterSelect">
+            <option value="all">Todas as Disciplinas (70 Q)</option>
+            <option value="Língua Portuguesa">Língua Portuguesa (12 Q)</option>
+            <option value="Língua Inglesa">Língua Inglesa (12 Q)</option>
+            <option value="Raciocínio Lógico-Matemático">Raciocínio Lógico-Matemático (6 Q)</option>
+            <option value="Atualidades">Atualidades (5 Q)</option>
+            <option value="Legislação &amp; Proteção de Dados">Legislação &amp; Proteção de Dados (5 Q)</option>
+            <option value="Conhecimentos Específicos de TI">Conhecimentos Específicos de TI (30 Q)</option>
+          </select>
+
+          <!-- Filtro de Status -->
+          <label for="statusFilterSelect" class="visually-hidden" style="display:none;">Status:</label>
+          <select class="select-filter" id="statusFilterSelect">
+            <option value="all">Todos os Status</option>
+            <option value="unanswered">Pendentes (Não respondidas)</option>
+            <option value="answered">Respondidas</option>
+            <option value="bookmarked">Salvas / Favoritas ⭐</option>
+            <option value="wrong">Incorretas (Apenas Erros) ❌</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Layout 2 Colunas: Questão + Mapa de Navegação 70 Questões -->
+      <div class="quiz-grid-layout">
+        <!-- Coluna Esquerda: Card da Questão -->
+        <div id="questionCardContainer">
+          <!-- Renderizado dinamicamente via app.js -->
+        </div>
+
+        <!-- Coluna Direita: Paleta com as 70 Questões -->
+        <aside class="palette-sidebar">
+          <div class="palette-header">
+            <h3>Mapa da Prova</h3>
+            <span style="font-size:0.78rem; font-weight:700; color:var(--primary);" id="paletteAnsweredCount">0 / 70</span>
+          </div>
+
+          <div class="palette-legend">
+            <div class="legend-item"><div class="legend-dot dot-unanswered"></div><span>Pendente</span></div>
+            <div class="legend-item"><div class="legend-dot dot-answered"></div><span>Respondida</span></div>
+            <div class="legend-item"><div class="legend-dot dot-correct"></div><span>Correta</span></div>
+            <div class="legend-item"><div class="legend-dot dot-incorrect"></div><span>Incorreta</span></div>
+            <div class="legend-item" style="grid-column: span 2;"><div class="legend-dot dot-review"></div><span>Em Dúvida (Marcador)</span></div>
+          </div>
+
+          <div class="palette-grid" id="paletteGrid">
+            <!-- 70 botões numéricos gerados dinamicamente via app.js -->
+          </div>
+
+          <div style="margin-top:1.25rem; text-align:center;">
+            <button class="btn-nav btn-finish-test" style="width:100%; justify-content:center;" onclick="window.dataprevApp.confirmFinishExam()">
+              🏁 Finalizar Simulado
+            </button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ABA 2: EMBASAMENTO TEÓRICO COMPLETO
+         ==================================================================== -->
+    <section class="tab-content-panel" id="view-teoria" style="display:none;">
+      <div class="theory-layout">
+        <!-- Sidebar com índice de matérias e tópicos -->
+        <nav class="theory-sidebar" id="theorySidebar" aria-label="Menu de matérias da teoria">
+          <!-- Gerado dinamicamente via app.js -->
+        </nav>
+
+        <!-- Leitor de Conteúdo Teórico -->
+        <div id="theoryReader">
+          <!-- Renderizado dinamicamente via app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ABA 3: ESTATÍSTICAS E PAINEL DE DESEMPENHO
+         ==================================================================== -->
+    <section class="tab-content-panel" id="view-estatisticas" style="display:none;">
+      <div id="statsViewContainer">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ABA 4: CADERNO DE ERROS
+         ==================================================================== -->
+    <section class="tab-content-panel" id="view-erros" style="display:none;">
+      <div id="errosViewContainer">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ABA 5: GUIA DO CONCURSO DATAPREV
+         ==================================================================== -->
+    <section class="tab-content-panel" id="view-sobre" style="display:none;">
+      <div class="theory-reader-card" style="max-width:960px; margin:0 auto;">
+        <div class="theory-header-box">
+          <h2>Concurso Público DATAPREV &middot; Guia Oficial do Candidato</h2>
+          <p>Estrutura da última prova realizada pela FGV, regras de pontuação, perfil do cargo e critérios de aprovação.</p>
+        </div>
+
+        <div class="theory-content-body">
+          <h3>📌 Sobre o Concurso e a Banca Organizadora</h3>
+          <p>
+            A <strong>Fundação Getúlio Vargas (FGV)</strong> é a banca responsável pelo concurso da <strong>DATAPREV</strong> (Empresa de Tecnologia e Informações da Previdência), estatal federal responsável por operar os sistemas que sustentam a previdência social, o Cadastro Único (CadÚnico), a carteira de trabalho digital e as maiores políticas públicas do Brasil.
+          </p>
+
+          <h3>📋 Estrutura da Prova Objetiva (70 Questões)</h3>
+          <p>A prova objetiva de nível superior para o cargo de <strong>Analista de Tecnologia da Informação</strong> é composta por 70 questões de múltipla escolha com 5 alternativas (A, B, C, D, E) cada, distribuídas nas seguintes disciplinas:</p>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Módulo</th>
+                  <th>Disciplina</th>
+                  <th>Nº de Questões</th>
+                  <th>Perfil Cobrado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Básico</strong></td>
+                  <td>Língua Portuguesa</td>
+                  <td>12</td>
+                  <td>Interpretação inferencial rigorosa, paralelismo, sintaxe e semântica.</td>
+                </tr>
+                <tr>
+                  <td><strong>Básico</strong></td>
+                  <td>Língua Inglesa</td>
+                  <td>12</td>
+                  <td>Inglês instrumental para TI, cloud computing, RFC 2119 e segurança.</td>
+                </tr>
+                <tr>
+                  <td><strong>Básico</strong></td>
+                  <td>Raciocínio Lógico-Matemático</td>
+                  <td>06</td>
+                  <td>Leis de De Morgan, equivalências lógicas, combinatória e probabilidades.</td>
+                </tr>
+                <tr>
+                  <td><strong>Básico</strong></td>
+                  <td>Atualidades</td>
+                  <td>05</td>
+                  <td>Governo digital (Gov.br), IA ética, cidadania digital e soberania de dados.</td>
+                </tr>
+                <tr>
+                  <td><strong>Básico</strong></td>
+                  <td>Legislação de Segurança &amp; LGPD</td>
+                  <td>05</td>
+                  <td>Lei 13.709/18 (LGPD), Marco Civil (Lei 12.965/14) e LAI (Lei 12.527/11).</td>
+                </tr>
+                <tr>
+                  <td><strong>Específico</strong></td>
+                  <td>Conhecimentos Específicos de TI</td>
+                  <td>30</td>
+                  <td>Engenharia de Software (SOLID/GoF), Microsserviços, Docker, Kubernetes, CI/CD, ACID, NoSQL, OWASP, Scrum, ITIL v4.</td>
+                </tr>
+                <tr style="font-weight:bold; background-color:var(--bg-secondary);">
+                  <td colspan="2">TOTAL GERAL DE QUESTÕES</td>
+                  <td>70</td>
+                  <td>Tempo de Prova: 4 horas e 30 minutos</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>🎯 Critérios Oficiais de Habilitação e Aprovação</h3>
+          <ul>
+            <li><strong>Aproveitamento Mínimo Geral</strong>: Obter no mínimo <strong>50% de acertos</strong> no total de pontos da prova objetiva (35 acertos em 70 questões).</li>
+            <li><strong>Mínimo nos Módulos</strong>: Não zerar nenhuma das disciplinas de conhecimentos básicos e atingir o percentual mínimo exigido em conhecimentos específicos.</li>
+            <li><strong>Empates</strong>: A prova de Conhecimentos Específicos e a pontuação em Língua Portuguesa costumam ser os principais critérios de desempate na classificação final.</li>
+          </ul>
+
+          <h3>💡 Recomendações Estratégicas para o Simulado</h3>
+          <blockquote>
+            <strong>Dica do Especialista:</strong> Utilize o <em>Modo Prova Real</em> para treinar o ritmo de leitura (média de 3,8 minutos por questão) e a gestão do tempo com o cronômetro oficial de 4h30. Em seguida, utilize o <em>Caderno de Erros</em> para estudar o embasamento teórico de cada alternativa que você errou.
+          </blockquote>
+
+          <div style="margin-top:2rem; text-align:center;">
+            <button class="btn-nav btn-nav-next" onclick="window.dataprevApp.switchTab('simulado')">
+              Iniciar Simulado Agora
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/questions.js"></script>
+  <script src="js/theory.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
