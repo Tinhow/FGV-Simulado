@@ -1,6 +1,6 @@
 # Servidor HTTP local leve em PowerShell
 $port = 8080
-$path = "c:\Users\Walter-pc\Desktop\Projects"
+$path = $PSScriptRoot
 
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$port/")

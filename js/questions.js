@@ -1,1486 +1,1229 @@
-/**
- * BANCO OFICIAL DE QUESTÕES - CONCURSO DATAPREV (FGV)
- * Cargo: Analista de Tecnologia da Informação
- * Total: 70 Questões divididas exatamente conforme a estrutura do edital oficial da banca FGV:
- *   - Língua Portuguesa (Questões 1 a 12)
- *   - Língua Inglesa (Questões 13 a 24)
- *   - Raciocínio Lógico-Matemático (Questões 25 a 30)
- *   - Atualidades (Questões 31 a 35)
- *   - Legislação de Segurança da Informação e Proteção de Dados (Questões 36 a 40)
- *   - Conhecimentos Específicos de Tecnologia da Informação (Questões 41 a 70)
- */
+/* Banco oficial DATAPREV - ATI Desenvolvimento de Software - FGV.
+   Caderno TIPO 4 (AZUL), prova aplicada em 17/11/2024.
+
+   Enunciados e alternativas transcritos LITERALMENTE do caderno. Ao editar,
+   mantenha a fidelidade ao original: não resuma, não reescreva, não corrija a
+   redação da banca. O que a FGV cobra está justamente nos qualificadores
+   ("apenas", "exclusivamente", "sempre") e no comprimento das alternativas.
+
+   Convenções:
+   - **trecho** marca o que o caderno traz sublinhado ou em negrito.
+   - `passage` guarda o texto de apoio (texto-base, versos, frase de
+     referência, código) tal como impresso.
+   - O gabarito de cada questão é conferido no fim do arquivo contra o
+     gabarito oficial do Tipo 4. */
+const q = (
+  id,
+  subject,
+  subtopic,
+  statement,
+  options,
+  correctAnswer,
+  explanation,
+  area,
+  passage,
+) => ({
+  id,
+  subject,
+  // Área temática. O id é o mesmo da seção correspondente em theory.js, então
+  // o botão "Teoria" sempre cai no assunto certo e a aba Foco agrupa por aqui.
+  area,
+  theoryRef: area,
+  subtopic,
+  passage,
+  statement,
+  options,
+  correctAnswer,
+  explanation: `Gabarito ${String.fromCharCode(65 + correctAnswer)}. ${explanation}`,
+});
+const P = "Língua Portuguesa",
+  I = "Língua Inglesa",
+  R = "Raciocínio Lógico-Matemático",
+  A = "Atualidades",
+  L = "Legislação & Proteção de Dados",
+  T = "Conhecimentos Específicos de TI";
+
+// --- TEXTOS-BASE DO CADERNO (compartilhados por vários itens) ---
+
+// "Use the following TEXT to answer the next six questions." (questões 13 a 18)
+const TXT_CONSULTING = `Technology Consultant Fast Track: How to Get Your Dream Job in IT Consulting (IT Consulting Career Guide).
+(English Edition) eBook Kindle only.
+
+Jumpstart your IT job search and land your dream job while your peers are still "freshening up" their resumes!
+
+Proven techniques to land your dream job as a high-paid IT consultant—you don't want to miss these, if you are serious about a career in IT!
+
+Answers to IT consulting career questions most people fail to ask; actionable advice and real-life stories from seasoned IT consultants!
+
+As a fresh graduate looking for your first job, if you just do what almost everybody else is doing…you will land a hellhole job with lousy pay, long hours, nasty coworkers, and exclusively clients from hell (because you thought it was your only option to go forward in your career). If you are serious and can apply simple instructions, this book can help you become a high-paid IT consultant in your dream job by the end of the month!
+
+If you already have your first or second job in the field of IT, or even have 20 years of work experience, this book will tell you what a great option a career in IT consulting can be. With this book, you can find out why your current job is not satisfying your career aspirations **and** turn your career around for the better!
+
+Containing lessons from a PhD with 12 years of experience and 15,000 billable hours from Accenture and Coala, this is the book movers and shakers in the IT industry are talking about. Recommended by university professors, last-year students, as well as seasoned consultants. Even my mom says you have to read this book, or you have to answer to **her**!
+
+By reading this book, you will learn:
+What your college professor didn't tell you about the consulting business.
+The Pro's and Con's of a career in technology consulting.
+What other options do you have besides working for one of the global consulting giants such as Accenture, Capgemini, Deloitte, Ernst & Young (EY), KPMG, or PricewaterhouseCoopers (PwC).
+The must-have characteristics to succeed in IT consulting (if you don't have these, you are doomed to FAIL!).
+How to find your money-making niche in IT consulting.
+How to get the best results with the least possible effort in your job search.
+Best ways to prepare for the job interview in 30 minutes or less.
+What questions to ask in the interview to avoid nasty surprises when you are selected.
+
+Hear what others are saying:
+★★★★★ "The book gives a strong and realistic description of IT consultancy. **Thus**, every IT student should read the book before they graduate as it will increase their probability of landing a dream job." Samuli Pekkola, Professor, PhD, in Information Systems Sciences, Tampere University
+★★★★★ "The book gives insight into technology consulting and provides great tips for job search. I believe it will be very valuable when I start looking for a position in IT. The section on how to stand out as a candidate for a job was an eyeopener." Saku Sikiö, Information Systems Student, University of Jyväskylä
+★★★★★ "This is the book I would have needed on the verge of graduation!" Teijo Kelander, MSc, Quality Consultant and Agile Coach
+★★★★★ "If you are serious about IT consultancy as a profession, this book is a must-read! As a recruiter, I would prefer that applicants would better understand what this is all about." Petteri Laamanen, MSc, CEO & Founder, Coala
+★★★★★ "This book gave me valuable insights into the IT consultant's working life, making it easier to consider the pros and cons in relation to my own values and goals." Janita Kingelin, MSc, Marketing Manager, SoulCore
+★ If you want great results in your technology consultant job search, get this book right now!
+
+https://www.amazon.com.br/Technology-Consultant-Fast-Track-Consulting-ebook/dp/B0918JB48D`;
+
+// "Use the following TEXT to answer the next four questions." (questões 19 a 22)
+const TXT_APPECO = `Research-Article
+How to be a successful app developer: lessons from the simulation of an app ecosystem
+Soo Ling Lim, Peter J. Bentley
+
+Abstract
+App developers are constantly competing against each other to win more downloads for their apps. With hundreds of thousands of apps in these online stores, what strategy **should** a developer use to be successful? **Should** they innovate, make many similar apps, optimize their own apps or just copy the apps of others? Looking more deeply, how does a complex app ecosystem perform when developers choose to use different strategies? This paper investigates these questions using AppEco, the first Artificial Life model of mobile application ecosystems. In AppEco, developer agents build and upload apps to the app store; user agents **browse** the store and download the apps. A distinguishing feature of AppEco is the explicit modelling of apps as artefacts. In this work we use AppEco to simulate Apple's iOS app ecosystem and investigate common developer strategies, evaluating them in terms of downloads received, app diversity, and adoption **rate**.
+
+https://dl.acm.org/doi/10.1145/2384697.2384698`;
+
+// "Use the following TEXT to answer the next two questions." (questões 23 e 24)
+const TXT_PRINTER = `It's not often we write about printers here on the Giz, but Brother's new MPrint MW-260 gets honorable mention for being the world's thinnest printer. **It** can print up to 20 pages per minute from any PC, Pocket PC, or Windows Mobile handheld. Best of all, it also prints over Bluetooth (in addition to your standard USB). No word on pricing or availability, but this is **a 1-pound printer** we wouldn't mind adding to our travel bag. It's worth buying!
+
+Louis Ramirez
+http://www.gizmodo.com/`;
 
 const questionsData = [
-  // =========================================================================
-  // BLOC 1: LÍNGUA PORTUGUESA (Questões 1 a 12)
-  // =========================================================================
-  {
-    id: 1,
-    subject: "Língua Portuguesa",
-    subtopic: "Interpretação e Inferência Textual",
-    theoryRef: "portugues-interpretacao",
-    statement: `Considere o fragmento a seguir, adaptado de texto sobre a transformação digital nos serviços públicos:
+  q(
+    1,
+    P,
+    "Concordância nominal",
+    "Assinale a opção correta em relação à concordância nominal.",
+    [
+      "A candidata parece meia confusa.",
+      "É proibido a entrada de visitantes nessa área.",
+      "A diretora achou um e outro funcionário cumpridor.",
+      "A entrada para o teatro, atualmente, está muito caro.",
+      "As certidões estão anexas ao processo.",
+    ],
+    4,
+    "Anexas é adjetivo e concorda com certidões. Nas demais: meia deveria ser meio (advérbio); É proibida a entrada, por haver o determinante a; um e outro funcionário cumpridores, com adjetivo no plural; e a entrada está muito cara, concordando com o sujeito.",
+    "portugues-normativa",
+  ),
+  q(
+    2,
+    P,
+    "Relações semânticas",
+    "Assinale a opção que indica corretamente a noção semântica expressa pelo elemento destacado em: “A moça recostara-se em uma cadeira de balanço no claro de uma janela, **de modo que** seu gracioso vulto imergia-se na plena luz”.",
+    ["Consequência.", "Causa.", "Finalidade.", "Tempo.", "Proporcionalidade."],
+    0,
+    "De modo que introduz o resultado efetivo da posição em que a moça se recostou: valor consecutivo. Só seria final se equivalesse a “para que”, com verbo no subjuntivo.",
+    "portugues-sintaxe",
+  ),
+  q(
+    3,
+    P,
+    "Interpretação",
+    "Assinale a opção correta sobre o sentido da frase em destaque.",
+    [
+      "É impossível ser feliz e viver.",
+      "Viver pressupõe felicidade.",
+      "Há uma relação paradoxal entre felicidade e vida.",
+      "É preciso esquecer da felicidade para obtê-la.",
+      "Descreve-se o caráter efêmero da felicidade.",
+    ],
+    2,
+    "Dizer que a felicidade é oposta à vida e, ao mesmo tempo, que se está nela é uma contradição aparente que produz sentido: isso caracteriza o paradoxo.",
+    "portugues-interpretacao",
+    "A felicidade é tão oposta à vida, que estando nela, a gente esquece que vive.",
+  ),
+  q(
+    4,
+    P,
+    "Formação vocabular",
+    "Assinale a opção que relaciona de modo **incorreto** o adjetivo à locução adjetiva destacada.",
+    [
+      "Pessoas **que não se contentavam** com o que tinham - descontentes.",
+      "Uma ferida **que não se apagava** - indelével.",
+      "Havia algo em sua imagem **que não se podia distinguir** - indistinguível.",
+      "Tinha a característica de alguém **que não se irrita com facilidade** – irascível.",
+      "Água e álcool são elementos **que não se misturam** - imiscíveis.",
+    ],
+    3,
+    "Irascível significa justamente o contrário: quem se irrita com facilidade. O “ir-” vem do radical latino irasci (irar-se), não é prefixo de negação.",
+    "portugues-semantica",
+  ),
+  q(
+    5,
+    P,
+    "Verbos de estado",
+    "Assinale a opção em que o verbo destacado indica estado.",
+    [
+      "Ele virou-lhe as costas e **tornou** lentamente por onde viera.",
+      "Piedade **ficou** à janela.",
+      "Os curiosos **permaneciam** defronte de sua porta.",
+      "Coitada! Devia **viver** bem aborrecida da sorte.",
+      "Fazes mal em **andar** por aí com este sol.",
+    ],
+    3,
+    "Em “viver aborrecida”, aborrecida é predicativo do sujeito e viver funciona como verbo de ligação, exprimindo estado. Em ficou à janela e permaneciam defronte da porta há circunstância de lugar (adjunto adverbial), não predicativo; tornou (= voltou) e andar indicam ação.",
+    "portugues-semantica",
+  ),
+  q(
+    6,
+    P,
+    "Pontuação",
+    "Assinale a opção em que a vírgula se justifica pelo mesmo motivo do que em “se as duas tribos dividirem em paz as batatas do campo, não chegam a nutrir-se suficientemente e morrem de inanição”.",
+    [
+      "Acrescia que, em verdade, o doente parecia estar melhorando.",
+      "Verdade é, disse ainda Rubião para defender o enfermo, verdade é que o cachorro merece a estima do dono.",
+      "Quando este acudiu, já ele mudara outra vez de ideia.",
+      "Espreitara uma deixa, e sai-lhe do testamento a massa toda dos bens.",
+      "No dia seguinte, Maria Benedita declarou à prima que estava pronta a aprender piano e francês.",
+    ],
+    2,
+    "No trecho de referência há uma oração subordinada adverbial condicional anteposta à principal. A mesma justificativa vale em “Quando este acudiu, …”, adverbial temporal anteposta. Em (A) e (B) há intercalação; em (D), coordenadas com sujeitos diferentes; em (E), adjunto adverbial deslocado — locução, não oração.",
+    "portugues-pontuacao",
+  ),
+  q(
+    7,
+    P,
+    "Variação linguística",
+    "Nos versos de Luiz Gonzaga, o eu poético narra, em primeira pessoa, suas impressões sobre um determinado assunto.\nPara isso, ele utiliza construções linguísticas próprias, constatadas pelo uso",
+    [
+      "de uma norma linguística regional, a fim de caracterizar a cultura e o modo de vida do interior.",
+      "do termo comparativo “qual”, que estabelece uma analogia entre terra e fogueira.",
+      "de modalidade oral, que apresenta poucos recursos comunicativos, se comparada à modalidade escrita.",
+      "do substantivo judiação, que reitera a tristeza do poeta nos trechos em destaque.",
+      "de uma norma linguística desprestigiada, que serve para apontar a desigualdade social.",
+    ],
+    0,
+    "Oiei, preguntei e uai marcam uma variedade regional, que caracteriza a cultura do interior. As alternativas que tratam a variedade como pobre ou desprestigiada contrariam o princípio de que nenhuma variedade é linguisticamente inferior.",
+    "portugues-interpretacao",
+    "Quando **oiei** a terra ardendo\nQual fogueira de São João\nEu **preguntei** a Deus do céu, **uai**\nPor que tamanha judiação?",
+  ),
+  q(
+    8,
+    P,
+    "Interpretação literária",
+    "Leia o fragmento de Fernando Pessoa reproduzido no texto de apoio.\nAssinale a opção correta sobre a interpretação dos versos em destaque.",
+    [
+      "Existe uma visão negativa do fazer poético, já que o poeta é descrito como “fingidor”.",
+      "O jogo de palavras em fingidor - fingir dor - contribui para caracterizar o poeta como sujeito insubmisso ao sentimento.",
+      "O fingimento é matéria de poesia, é a ferramenta da criação literária.",
+      "O exercício de fazer poesia torna o poeta imune à dor.",
+      "Há uma perspectiva irônica que se sustenta, sobretudo, em fingir a dor que, de fato, sente-se.",
+    ],
+    2,
+    "Fingir, em Pessoa, não é mentir: é transfigurar a experiência em matéria estética. O poeta elabora a dor real até ela virar dor poética — o fingimento é a ferramenta da criação.",
+    "portugues-interpretacao",
+    "O poeta é um fingidor\nFinge tão completamente\nQue chega a fingir que é dor\nA dor que deveras sente.",
+  ),
+  q(
+    9,
+    P,
+    "Orações reduzidas",
+    "Sobre a estrutura sintática da frase em destaque, assinale a opção **incorreta**.",
+    [
+      "Existe uma oração subordinada que exerce função de sujeito em relação à oração principal.",
+      "Nota-se uma oração subordinada substantiva, em que a segunda oração exerce função própria de um substantivo em relação à oração principal.",
+      "Observa-se uma oração subordinada reduzida de infinitivo.",
+      "Verifica-se a possibilidade de desenvolver a segunda oração em “que se esteja atento e forte”.",
+      "Há uma oração subordinada que delimita a informação presente na oração principal.",
+    ],
+    4,
+    "“Estar atento e forte” é oração subordinada substantiva subjetiva reduzida de infinitivo: ela é o sujeito de é preciso. Delimitar a informação da principal é próprio da oração adjetiva restritiva, que não ocorre aqui.",
+    "portugues-sintaxe",
+    "É preciso estar atento e forte.",
+  ),
+  q(
+    10,
+    P,
+    "Funções sintáticas",
+    "Assinale a opção em que o elemento destacado **não** funciona como adjunto adnominal.",
+    [
+      "Não admira que, fora de si, e andando rápido, desse um encontrão em certo homem **que ia devagar**.",
+      "Catete adiante, lembrou-se que a casa **de Sofia** era na Praia do Flamengo.",
+      "Após **alguns** instantes rápidos, abanou a cabeça voluntariamente.",
+      "Este apertou-lhe a mão satisfeitíssimo; ia ver-se livre **de um sócio**.",
+      "Mas diga-me uma coisa, essa proposta traz algum motivo **oculto**?",
+    ],
+    3,
+    "Em “livre de um sócio”, a expressão completa o sentido do adjetivo livre: é complemento nominal. Adjetivo não recebe adjunto adnominal. Nas demais, os termos destacados restringem substantivos.",
+    "portugues-sintaxe",
+  ),
+  q(
+    11,
+    P,
+    "Discurso direto",
+    "Sobre o uso do discurso direto, é **incorreto** afirmar que este procedimento",
+    [
+      "cria o efeito de realidade, já que a fala busca reproduzir o momento da enunciação.",
+      "atribui o sentido de verdade, tendo em vista que prevalece o teor de preservação do discurso citado.",
+      "delimita a fronteira entre o discurso do narrador e o discurso citado por meio de aspas, travessão e verbos de elocução.",
+      "demarca a soberania do narrador, pois ele interpreta a fala citada, absorvida no fio de seu discurso.",
+      "precisa transpor as palavras do discurso citado, tal qual foram enunciadas originalmente.",
+    ],
+    3,
+    "A fala absorvida e interpretada no fio do discurso do narrador caracteriza o discurso indireto. No direto, a voz do outro entra preservada e separada por marcas gráficas.",
+    "portugues-interpretacao",
+    "O uso excessivo de telas faz mal à saúde da mente e do corpo e os efeitos podem ser ainda mais danosos nas duas primeiras décadas de vida:\n\n- Como tudo, o problema está no excesso e na falta de controle adequado, afirma o psicólogo Thiago Viola, do Instituto do Cérebro do Rio Grande do Sul.\n\nbbc.com (adaptado)",
+  ),
+  q(
+    12,
+    P,
+    "Regência verbal",
+    "Assinale a opção que apresenta corretamente a regência dos verbos.",
+    [
+      "Não faz sentido obedecer a leis absurdas.",
+      "Admito que me simpatizei muito com a nova professora de Literatura.",
+      "Nossos vizinhos se mudaram e residem agora à rua das Laranjeiras.",
+      "Possuía uma dívida com o açougueiro, paguei-o assim que pude.",
+      "Vovó sempre lembra do aniversário de todos os seus netos.",
+    ],
+    0,
+    "Obedecer é transitivo indireto e rege a preposição a. Nas demais: simpatizar não é pronominal (simpatizei com); residir pede em (na rua); pagar pessoa pede objeto indireto (paguei-lhe, pois o pronome retoma o açougueiro); e lembrar só é indireto quando pronominal (lembra-se do aniversário).",
+    "portugues-normativa",
+  ),
+  q(
+    13,
+    I,
+    "Reading comprehension",
+    "Consider the following affirmatives:\n1. The TEXT can just be found online.\n2. The tips on this text are only for fresh graduates.\n3. It is a printed book.\n4. Professors, last-year students and consultants who are skilled at guiding business recommend the book.\n\nAccording to the TEXT,",
+    [
+      "only 2 and 4 are false.",
+      "only 1 and 4 are true.",
+      "only 1, 3 and 4 are true.",
+      "only 1, 2 and 4 are false.",
+      "only 3 and 4 are true.",
+    ],
+    1,
+    "Item 1 é verdadeiro (“eBook Kindle only”) e o item 4 também (“Recommended by university professors, last-year students, as well as seasoned consultants”). O item 2 é falso, pois o texto atende também quem tem 20 anos de experiência, e o 3 é falso, já que não é livro impresso.",
+    "ingles-compreensao",
+    TXT_CONSULTING,
+  ),
+  q(
+    14,
+    I,
+    "Pronouns",
+    "In the excerpt in TEXT “Recommended by university professors, last-year students, as well as seasoned consultants. Even my mom says you have to read this book, or you have to answer to **her**!”\nThe pronoun her refers to",
+    ["consultants.", "book.", "students.", "professors.", "mom."],
+    4,
+    "Her é singular, feminino e [+humano]. Consultants, students e professors são plurais; book é [−humano]. O antecedente é mom.",
+    "ingles-referencia",
+    TXT_CONSULTING,
+  ),
+  q(
+    15,
+    I,
+    "Reading comprehension",
+    "What information is in TEXT?",
+    [
+      "Tips on an in-person appraisal to be a successful IT consultant.",
+      "A review on a guide to foster the possibility of being successful in finding your Dream Job in IT Consulting, despite your experience.",
+      "Challenge only beginners to read a guide well written and recommended by professors in the IT scenario.",
+      "The reasons one should buy the guide to be a successful IT consultant abroad.",
+      "It is a well explained guide to enhance people’s desire to find a dream internship despite their social status.",
+    ],
+    1,
+    "O texto divulga um guia de carreira útil a leitores de qualquer nível de experiência — daí “despite your experience”. As demais restringem indevidamente: só iniciantes, só no exterior, ou estágio em vez de emprego.",
+    "ingles-compreensao",
+    TXT_CONSULTING,
+  ),
+  q(
+    16,
+    I,
+    "Connectives",
+    "“With this book, you can find out why your current job is not satisfying your career aspirations **and** turn your career around for the better!”\nThe discourse marker and used in TEXT is similar in meaning to",
+    ["hence.", "whereas.", "unless.", "moreover.", "meanwhile."],
+    3,
+    "And soma um segundo benefício: valor aditivo, equivalente a moreover. Hence é consequência, whereas é contraste, unless é condição e meanwhile é tempo.",
+    "ingles-referencia",
+    TXT_CONSULTING,
+  ),
+  q(
+    17,
+    I,
+    "Reading comprehension",
+    "By the end of TEXT six people assessed the guide. One of them said that he should have had the opportunity to study on the guide on the brick of graduating.\nChoose the person who said that.",
+    [
+      "Saku Sikiö",
+      "Petteri Laamanen",
+      "Samuli Pekkola",
+      "Janita Kingelin",
+      "Teijo Kelander",
+    ],
+    4,
+    "A pergunta parafraseia “This is the book I would have needed on the verge of graduation!”, depoimento assinado por Teijo Kelander.",
+    "ingles-compreensao",
+    TXT_CONSULTING,
+  ),
+  q(
+    18,
+    I,
+    "Connectives",
+    "In the sentence taken from TEXT “The book gives a strong and realistic description of IT consultancy. **Thus**, every IT student should read the book before they graduate as it will increase their probability of landing a dream job.”\nThe underlined linker introduces",
+    [
+      "a condition.",
+      "an example.",
+      "an effect.",
+      "an order.",
+      "a reason.",
+    ],
+    2,
+    "Thus equivale a therefore: introduz consequência, efeito do que foi dito antes.",
+    "ingles-referencia",
+    TXT_CONSULTING,
+  ),
+  q(
+    19,
+    I,
+    "Academic reading",
+    "According to TEXT it can be said that",
+    [
+      "This essay is concerned not only about apps but also about successful web developers.",
+      "The Text is an academic piece of writing.",
+      "Artificial Intelligence has created app store.",
+      "App developers are addicted to AppEco.",
+      "AppEco is a website known around the world by foreigners.",
+    ],
+    1,
+    "Título, autores, seção Abstract, descrição de método e DOI identificam um artigo acadêmico. As demais afirmam o que o texto não diz: ele trata de apps, não de web developers, e AppEco é um modelo de simulação, não um site.",
+    "ingles-compreensao",
+    TXT_APPECO,
+  ),
+  q(
+    20,
+    I,
+    "Word classes",
+    "In the excerpt “In this work we use AppEco to simulate Apple's iOS app ecosystem and investigate common developer strategies, evaluating them in terms of downloads received, app diversity, and adoption **rate**.\nChoose the correct option according to TEXT.",
+    [
+      "The word rate means a measure and it’s a discourse marker.",
+      "The word rate means to quantify and it’s an adjective.",
+      "The word rate means to quantify and it’s a subject.",
+      "The word rate means to charge and it’s a verb.",
+      "The word rate means a measure and it’s a noun.",
+    ],
+    4,
+    "Rate vem precedido do substantivo adoption, que o modifica: é o núcleo do sintagma, portanto substantivo, com o sentido de medida/taxa de adoção.",
+    "ingles-vocabulario",
+    TXT_APPECO,
+  ),
+  q(
+    21,
+    I,
+    "Modal verbs",
+    "In the sentences, “With hundreds of thousands of apps in these online stores, what strategy **should** a developer use to be successful? **Should** they innovate, make many similar apps, optimize their own apps or just copy the apps of others?”.\nThe modal “should”, used in TEXT, expresses the idea of:",
+    [
+      "Absence of obligation",
+      "Suggestion",
+      "Offer",
+      "Possibility",
+      "Obligation",
+    ],
+    1,
+    "O autor levanta hipóteses de conduta recomendável, não impõe nem oferece nada: should tem aqui valor de conselho/sugestão. Ausência de obrigação seria don't have to; obrigação forte, must.",
+    "ingles-modais",
+    TXT_APPECO,
+  ),
+  q(
+    22,
+    I,
+    "Vocabulary",
+    "The word “browse” in “user agents **browse** the store and download the apps.”, taken from TEXT, is a verb.\nThe same word can also be used as a noun in sentence:",
+    [
+      "I stopped in several bookstores to ___.",
+      "I usually ___ the internet for a couple of hours each evening.",
+      "The brochure is well worth a ___.",
+      "There are plenty of biographies for him to ___ over.",
+      "I always ___ in an up-market antique shop.",
+    ],
+    2,
+    "Em “worth a ___”, a lacuna vem depois do artigo a, posição de substantivo. Nas demais, a lacuna segue to ou um sujeito, posições de verbo.",
+    "ingles-vocabulario",
+    TXT_APPECO,
+  ),
+  q(
+    23,
+    I,
+    "Pronouns",
+    "The pronoun “it” in “**It** can print up to 20 pages per minute from any PC, Pocket PC, or Windows Mobile handheld”, taken from TEXT, refers to",
+    [
+      "Computer.",
+      "Pocket PC.",
+      "Window Mobile handheld.",
+      "MPrint MW-260.",
+      "Bluetooth.",
+    ],
+    3,
+    "It retoma o sujeito recém-apresentado, a impressora MPrint MW-260. PC, Pocket PC e handheld aparecem como complementos de “from any”, não como sujeito.",
+    "ingles-referencia",
+    TXT_PRINTER,
+  ),
+  q(
+    24,
+    I,
+    "Vocabulary",
+    "In the sentence “No word on pricing or availability, but this is **a 1-pound printer** we wouldn't mind adding to our travel bag”.\nThe expression “... a 1-pound printer” taken from TEXT is referring to",
+    [
+      "The weight of the printer.",
+      "The price of the printer.",
+      "The printer serial number.",
+      "The printer stock availability.",
+      "The printer sale.",
+    ],
+    0,
+    "Pound é unidade de peso (≈ 453 g), e o contexto confirma: falar em levar na travel bag remete ao peso. Além disso, o texto diz explicitamente “No word on pricing”, o que elimina a alternativa do preço.",
+    "ingles-vocabulario",
+    TXT_PRINTER,
+  ),
+  q(
+    25,
+    R,
+    "Equivalência lógica",
+    "A proposição logicamente equivalente à proposição “Se Cesar é fã de futebol então ele assiste a muitos jogos” é",
+    [
+      "Cesar é fã de futebol e assiste a muitos jogos.",
+      "Cesar gosta de futebol porque assiste a muitos jogos.",
+      "Cesar gosta de assistir jogos por ser fã de futebol.",
+      "Se Cesar não assiste a muitos jogos então ele não é fã de futebol.",
+      "Se Cesar não é fã de futebol então ele não assiste a muitos jogos.",
+    ],
+    3,
+    "A equivalente de P → Q é a contrapositiva ~Q → ~P. A alternativa (E) é a inversa (~P → ~Q), que não equivale à condicional.",
+    "rlm-logica",
+  ),
+  q(
+    26,
+    R,
+    "Equações",
+    "Dois sistemas monitoram a variação de temperatura dos servidores em um data center. Um sistema registra variações positivas (aquecimento) e o outro registra variações negativas (resfriamento). Certo dia, a soma dessas variações foi de 1 grau Celsius, indicando que o ambiente se manteve praticamente estável. No entanto, a soma dos quadrados dessas variações foi de 313, o que revela uma diferença significativa entre o maior valor positivo e o menor valor negativo registrados.\nA diferença entre esses valores é",
+    ["20.", "25.", "30.", "35.", "40."],
+    1,
+    "De (x−y)² = (x+y)² − 4xy e xy = [(x+y)² − (x²+y²)]/2 = (1 − 313)/2 = −156, vem (x−y)² = 1 + 624 = 625, logo x − y = 25. As raízes são 13 e −12.",
+    "rlm-algebra",
+  ),
+  q(
+    27,
+    R,
+    "Média ponderada",
+    "Uma determinada escola adota o sistema de pesos por bimestre para o cálculo da média anual. O primeiro bimestre tem peso 1, o segundo, 2, o terceiro, 3, e o quarto, 4. Assim, para calcular a média anual, um estudante deve efetuar a soma de cada uma de suas notas bimestrais multiplicadas pelos seus respectivos pesos e dividir por 10. Para ser aprovado, um aluno precisa ter média anual, no mínimo, igual a 7,0.\nArnaldo tirou notas 4,0; 6,0; 8,0; 8,0 nos 4 bimestres, não necessariamente nessa ordem. Para que Arnaldo seja aprovado, a sua menor nota deve ter sido tirada no",
+    [
+      "1º bimestre, necessariamente.",
+      "1º ou 2º bimestres, necessariamente.",
+      "2º bimestre, necessariamente.",
+      "3º bimestre, necessariamente.",
+      "3º ou 4º bimestre, necessariamente.",
+    ],
+    1,
+    "É preciso soma ponderada ≥ 70. Com a nota 4 no peso 1: 4+12+24+32 = 72 ✔. No peso 2: 8+6+24+32 = 70 ✔. No peso 3: 66 ✗. No peso 4: 62 ✗. Logo, 1º ou 2º bimestre.",
+    "rlm-proporcoes",
+  ),
+  q(
+    28,
+    R,
+    "Porcentagem",
+    "O preço de venda de certo item de consumo sofreu dois aumentos mensais consecutivos, sendo o primeiro de 30% e o segundo de 10%.\nSobre a taxa média de aumento mensal nesse período, é correto afirmar que",
+    [
+      "é maior que 19% e menor que 20%.",
+      "é igual a 20%.",
+      "é maior que 20% e menor que 21%.",
+      "é igual a 21,5%.",
+      "é igual a 43%.",
+    ],
+    0,
+    "O fator acumulado é 1,30 × 1,10 = 1,43. A taxa média é a média geométrica: √1,43 − 1 ≈ 19,58%. A alternativa dos 20% é a armadilha de quem calcula a média aritmética.",
+    "rlm-proporcoes",
+  ),
+  q(
+    29,
+    R,
+    "Razão e proporção",
+    "Arnaldo e Bernaldo associaram-se em um determinado negócio. Arnaldo entrou com R$ 12.000,00 e Bernaldo com R$ 13.000,00.\nSe perderem R$ 50.000,00, caberá a Arnaldo o prejuízo de",
+    [
+      "R$ 18.000,00",
+      "R$ 20.000,00",
+      "R$ 24.000,00",
+      "R$ 26.000,00",
+      "R$ 28.000,00",
+    ],
+    2,
+    "O prejuízo se reparte na razão do capital: 12.000/25.000 = 0,48; 0,48 × 50.000 = R$ 24.000. Confere: 24.000 + 26.000 = 50.000.",
+    "rlm-proporcoes",
+  ),
+  q(
+    30,
+    R,
+    "Combinatória",
+    "Numa certa região há alguns vilarejos de maneira que cada dupla de vilarejos possui uma única estrada que os conecta. Observe o exemplo para cinco vilarejos em que cada casinha representa um vilarejo e cada segmento de reta representa uma estrada.\nConsidere que nessa região há inicialmente x vilarejos e que 2 novos vilarejos estejam se desenvolvendo. Por essa razão, 17 novas estradas estão sendo construídas.\nNessas condições, o número x vale",
+    ["6.", "7.", "8.", "9.", "10."],
+    2,
+    "O total de estradas é C(n,2) = n(n−1)/2. Passando de x para x+2 vilarejos, as novas estradas são C(x+2,2) − C(x,2) = 2x + 1. De 2x + 1 = 17 vem x = 8.",
+    "rlm-algebra",
+    "[Figura do caderno] Cinco casinhas dispostas em pentágono, ligadas duas a duas por segmentos de reta — 10 estradas ao todo, que é C(5,2).",
+  ),
+  q(
+    31,
+    A,
+    "Tecnologia e meio ambiente",
+    "Sobre os aspectos apresentados no texto, julgue os itens a seguir:\n( ) As tecnologias digitais não são apenas fonte de soluções para problemas ligados ao meio ambiente, mas também consistem em fontes de impactos negativos.\n( ) O texto defende que todos os avanços tecnológicos representam invariavelmente benefícios para o meio ambiente.\n( ) Os data centers representam cerca de metade do consumo de energia dos ecossistemas digitais, termo cunhado para definir a relação entre infraestrutura digital, ferramentas e seres humanos.\n\nAs afirmativas são, respectivamente,",
+    ["V – F – V.", "F – V – V.", "V – V – F.", "F – F – V.", "V – V – V."],
+    0,
+    "O texto mostra as duas faces da tecnologia (I verdadeiro) e, ao expor o consumo dos data centers, contraria a ideia de benefício invariável (II falso). III é verdadeiro: os 2% citados referem-se à eletricidade de todo o planeta, não ao consumo do ecossistema digital, dentro do qual os data centers respondem por cerca de metade.",
+    "atualidades-ambiente",
+    "A adoção de tecnologias digitais muitas vezes é vista como resposta para dilemas ambientais. O avanço da internet, por exemplo, permitiu a diminuição do uso de papel, que foi substituído por bytes. Entretanto, os data centers ao redor do mundo consomem aproximadamente 2% de toda eletricidade do planeta, emitindo por exemplo, quantidades similares de carbono, comparadas as da indústria aérea.",
+  ),
+  q(
+    32,
+    A,
+    "G20",
+    "Sobre o Grupo apresentado no texto, julgue as afirmativas:\nI. Consiste num dos maiores blocos econômicos do planeta, sendo seu principal objetivo o livre comércio, sendo superado apenas pela União Europeia.\nII. Representa um fórum internacional de cooperação econômica, que possibilita entre outras coisas, debates sobre temas financeiros, fome, meio ambiente e desigualdades.\nIII. Congrega um bloco supranacional com objetivo de alinhar políticas macroeconômicas, éticas e militares, perante a comunidade internacional.\n\nEstá correto o que se afirma em",
+    [
+      "I, apenas.",
+      "II, apenas.",
+      "I e II, apenas.",
+      "I e III, apenas.",
+      "I, II e III.",
+    ],
+    1,
+    "Só II está correta. O G20 é fórum de cooperação econômica, não bloco econômico de livre comércio (I) nem bloco supranacional com alinhamento militar (III) — supranacionalidade implicaria cessão de soberania, o que não ocorre.",
+    "atualidades-geopolitica",
+    "Na reunião de cúpula do G2 que ocorre no Brasil, país que exerce a presidência rotativa até o fim de novembro, o tema principal dos debates é a construção de um Mundo Justo e um Planeta Sustentável. O governo brasileiro deseja colocar o combate às desigualdades no centro das discussões entre os países membros.\n\n[Nota: o caderno oficial traz “G2”; trata-se de erro de digitação da banca para G20.]",
+  ),
+  q(
+    33,
+    A,
+    "Proteção de dados",
+    "Sobre a denúncia, os dados podem ter o seguinte destino:\nI. Realização de publicidade direcionada a determinados perfis de consumidores, considerando a faixa etária, o sexo e perfis de saúde.\nII. Execução de publicidade para empresas do grupo econômico e para terceiros, gerando lucro indevido sem autorização ou conhecimento dos clientes.\nIII. Pesquisas da indústria farmacêutica para produção de remédios mais baratos, democratizando o acesso a tratamentos de saúde através do programa Farmácia Popular.\n\nEstá correto o que se afirma em",
+    [
+      "I, apenas.",
+      "III, apenas.",
+      "I e II, apenas.",
+      "I e III, apenas.",
+      "I, II e III.",
+    ],
+    2,
+    "A denúncia trata de coleta indevida e comercialização de dados, o que sustenta I e II. III descreve finalidade legítima e de interesse público, estranha ao caso relatado.",
+    "atualidades-consumo-dados",
+    "A Secretaria Nacional do Consumidor notificou uma grande rede de Farmácias para prestar esclarecimentos a respeito de práticas de tratamento indevido de dados pessoais de seus consumidores. O fato ocorreu por denúncia publicada em um grande portal de comunicação, que expôs a coleta inadequada de informações e sua comercialização.",
+  ),
+  q(
+    34,
+    A,
+    "Cidades-esponja",
+    "A nova legislação adotará mecanismos sustentáveis com intuito de:\n( ) Reduzir a sobrecarga dos sistemas tradicionais de drenagem possibilitando a aproximação de autossuficiência hídrica.\n( ) Direcionar as águas pluviais que causam transtornos, para o reabastecimento de redes subterrâneas.\n( ) Diminuir a presença da infraestrutura cinza na canalização de rios, com a construção de jardins de chuva, melhorando a impermeabilização de grandes áreas.\n\nAs afirmativas são, respectivamente,",
+    ["V – F – V.", "F – V – V.", "V – V – V.", "F – F – V.", "V – V – F."],
+    4,
+    "As duas primeiras descrevem corretamente a cidade-esponja. A terceira é falsa: jardins de chuva aumentam a permeabilidade do solo — impermeabilizar é justamente o problema que o modelo combate.",
+    "atualidades-ambiente",
+    "O município do Rio de Janeiro vai aplicar o conceito de cidade-esponja para diminuir os efeitos das enchentes. Esse modelo é usado em várias cidades do mundo para evitar tragédias ambientais, constituindo o ponto central de uma lei municipal, sancionada parcialmente em julho de 2024.",
+  ),
+  q(
+    35,
+    A,
+    "Racismo ambiental",
+    "Sobre o tema abordado no texto, julgue os itens a seguir:\nI. É flagrante violação da Constituição, com a distribuição injusta da poluição, submetendo de forma desigual, em razão da raça, determinadas populações a precárias condições de vida.\nII. Um projeto de desenvolvimento sustentável deve ser baseado em inovações tecnológicas, mantendo a lógica de consumo do atual modelo econômico, proporcionando justiça social para todos.\nIII. O conceito de racismo ambiental está ligado aos danos ambientais e sua imposição recorrente em comunidades habitadas principalmente por populações negras e pobres.\n\nEstá correto o que se afirma em",
+    [
+      "I, apenas.",
+      "III, apenas.",
+      "II e III, apenas.",
+      "I e III, apenas.",
+      "I, II e III.",
+    ],
+    3,
+    "I e III estão corretas. II é falsa: manter a lógica de consumo do modelo econômico atual contraria a própria noção de desenvolvimento sustentável — é o chamado solucionismo tecnológico.",
+    "atualidades-ambiente",
+    "A Constituição Federal é o documento jurídico-político que limita o poder estatal e o regulamenta. O art. 225 da Carta Magna confere a todos o direito ao meio ambiente equilibrado, impondo ao Poder Público e à coletividade preservá-lo, estabelecendo uma série de diretrizes aptas a assegurar a disposição.",
+  ),
+  q(
+    36,
+    L,
+    "Marco Civil",
+    "A Lei nº 12.965, de 23 de abril de 2014, estabelece princípios, garantias, direitos e deveres para o uso da Internet no Brasil. Ao tratar da proteção aos registros, aos dados pessoais e às comunicações privadas, tal diploma legal positiva sanções específicas para o descumprimento do que prescreve.\nA respeito disso, é correto afirmar que",
+    [
+      "as sanções só podem ser aplicadas isoladamente, exceto quando o caso reclamar a mais grave que, então, poderá ser cumulada com outras.",
+      "a previsão de advertência contempla duas faces: uma repressiva e outra corretiva, na medida em que se indica prazo para adoção de medidas de regularização.",
+      "a censura deve ser imposta à pessoa natural, proprietária do provedor, quando este burlar a proibição de coleta de dados pessoais anteriormente aplicada.",
+      "na previsão de multa, o quanto é fixado em 10% (dez por cento) do faturamento do grupo econômico no Brasil, extraído da média dos últimos três exercícios, excluídos os tributos.",
+      "a Lei nº 12.965, de 23 de abril de 2014, possui um vácuo legislativo com relação a empresas estrangeiras, porque não traz regramento sancionatório para suas condutas infringentes.",
+    ],
+    1,
+    "Art. 12, I: a advertência indica prazo para medidas corretivas — é sancionatória e corretiva ao mesmo tempo. As sanções podem ser aplicadas isolada ou cumulativamente; a multa é de ATÉ 10% sobre o ÚLTIMO exercício; a lei não prevê censura; e o parágrafo único do art. 12 responsabiliza solidariamente filial ou estabelecimento de empresa estrangeira no País.",
+    "leg-marco-civil",
+  ),
+  q(
+    37,
+    L,
+    "LGPD - sanções",
+    "As sanções administrativas estão positivadas na Lei nº 13.709, de 14 de agosto de 2018 (Lei Geral de Proteção de Dados Pessoais - LGPD), em capítulo intitulado de fiscalização.\nCom relação ao quadro legal sancionatório mencionado, é correto afirmar que",
+    [
+      "é possível a aplicação de sanções sem a formalização de processo administrativo correspondente, em caso no qual se constate que o agente de tratamento de dados é violador contumaz da citada lei.",
+      "a lei contempla expressamente diversos parâmetros e critérios a serem considerados na aplicação da sanção, como, por exemplo, a gravidade da infração, a boa fé e o fato de o infrator ter nacionalidade estrangeira.",
+      "eventual aplicação da sanção de multa simples a órgão público deverá considerar a arrecadação tributária do ente federativo a que pertença e o orçamento afetado para o desenvolvimento de suas atividades.",
+      "o produto da arrecadação das multas aplicadas pela Autoridade Nacional de Proteção de Dados, inscritas ou não em dívida ativa, será destinado diretamente às pessoas naturais cujo direito à proteção de dados foi violado.",
+      "em caso de vazamento individual, a lei contempla a possibilidade de conciliação direta entre controlador e titular, estando aquele, na hipótese de inexistência de acordo, sujeito à aplicação das penalidades previstas no capítulo mencionado.",
+    ],
+    4,
+    "Art. 52, §7º: vazamentos individuais podem ser objeto de conciliação direta entre controlador e titular e, não havendo acordo, aplicam-se as penalidades do artigo. Não há sanção sem processo administrativo; nacionalidade estrangeira não é parâmetro do §1º; e o produto das multas vai ao Fundo de Direitos Difusos, não diretamente aos titulares.",
+    "leg-lgpd",
+  ),
+  q(
+    38,
+    L,
+    "ANPD e CNPD",
+    "A Lei nº 13.709, de 14 de agosto de 2018, trouxe ao ordenamento jurídico duas figuras jurídicas importantes no sistema de proteção de dados pessoais.\nSobre o desenho legal da Autoridade Nacional de Proteção de Dados e o Conselho Nacional de Proteção de Dados Pessoais e da Privacidade, é correto afirmar que",
+    [
+      "atualmente, Conselho Nacional de Proteção de Dados Pessoais e da Privacidade possui natureza de empresa pública federal e a Autoridade Nacional de Proteção de Dados é órgão da administração pública federal.",
+      "o Conselho Diretor é composto de representantes, titulares e suplentes, da Câmara dos Deputados, do Comitê Gestor da Internet do Brasil, do Senado Federal, do Conselho Nacional de Justiça e do Conselho Nacional do Ministério Público.",
+      "o Conselho Nacional de Proteção de Dados Pessoais e da Privacidade possui atribuição de sugerir ações a serem realizadas pela Autoridade Nacional de Proteção de Dados e disseminar o conhecimento sobre a proteção de dados pessoais e da privacidade à população.",
+      "os membros do Conselho Nacional de Proteção de Dados Pessoais e da Privacidade somente perderão seus cargos em virtude de renúncia, condenação judicial transitada em julgado ou pena de demissão decorrente de processo administrativo disciplinar.",
+      "a Autoridade Nacional de Proteção de Dados é uma das integrantes do Conselho Nacional de Proteção de Dados Pessoais e da Privacidade, figurando como conselheira presidente, na hipótese de nomeação pelo Presidente da República.",
+    ],
+    2,
+    "São atribuições expressas do CNPD (art. 58-B, III e V). O Conselho Diretor é órgão DA ANPD, formado por diretores nomeados pelo Presidente da República após aprovação do Senado — os representantes da Câmara, do CNJ e do CNMP integram o CNPD, que é outra figura.",
+    "leg-lgpd",
+  ),
+  q(
+    39,
+    L,
+    "LAI",
+    "A Lei nº 12.527, de 18 de novembro de 2011, dispõe sobre as restrições de acesso à informação. Nesses termos, a lei traz diversos temas que permeiam a classificação da informação.\nSobre esse assunto, é correto afirmar que",
+    [
+      "as informações podem ser classificadas como ultrassigilosas, sigilosas ou reservadas, sendo certo que a decisão respectiva é discricionária, porquanto a lei não prevê balizas.",
+      "a decisão de classificação de uma informação é pública e de acesso a qualquer interessado, independentemente de demonstração de interesse, embora classificada a informação.",
+      "findo o prazo de classificação ou ocorrido o evento constituidor do termo final, para que o acesso se torne público são necessários procedimento próprio e decisão específica.",
+      "a informação que verse sobre conduta que implique violação dos direitos humanos praticada por agentes públicos ou a mando de autoridades públicas não pode ser objeto de restrição de acesso.",
+      "a lei permite a desclassificação, mas não a redução de prazo de informação classificada, devendo a reavaliação ser feita pela autoridade classificadora ou outra superior, mediante provocação ou de ofício.",
+    ],
+    3,
+    "É o art. 21, parágrafo único, da LAI. As demais: os graus são ultrassecreta, secreta e reservada, com hipóteses taxativas no art. 23; a decisão de classificar segue o sigilo do que classifica (art. 28, parágrafo único); findo o prazo o acesso é automático (art. 24, §4º); e a reavaliação pode desclassificar OU reduzir o prazo (art. 29, §2º).",
+    "leg-lai",
+  ),
+  q(
+    40,
+    L,
+    "Crime informático",
+    "Um hacker, por ter conseguido subtrair previamente a senha de acesso, invadiu o tablet do vice-Presidente da Câmara dos Deputados e, sem este saber, adulterou informações importantes relativas ao funcionamento da Casa Parlamentar, trazendo grande prejuízo político. Identificada a pessoa, o aludido congressista ajuizou queixa-crime. Ao final do processo penal, o hacker foi condenado com aumento de pena de um terço, por conta do sujeito passivo do delito.\nQuanto à situação descrita, é correto afirmar que",
+    [
+      "a deflagração da ação penal está incorreta, porquanto deveria ter sido iniciada pelo Ministério Público.",
+      "na fixação da pena, deveria ter havido um aumento de metade da pena, já que da invasão resultou prejuízo político.",
+      "o crime de invasão de dispositivo informático possui como elementar a exigência de o tablet estar conectado à rede de computadores.",
+      "o aumento da pena deveria ter sido de dois terços da pena, por conta do ilícito penal ter sido praticado contra o vice-Presidente da Câmara dos Deputados.",
+      "para configuração do delito trazido pelo art. 2º, da Lei nº 12.737, de 30 de novembro de 2012 (art. 154-A, do Código Penal), é preciso a efetiva adulteração das informações.",
+    ],
+    0,
+    "Art. 154-B do CP: procede-se mediante representação, salvo se o crime é cometido contra a administração pública — caso dos autos, pois atingiu o funcionamento da Casa Parlamentar. A ação é pública incondicionada e caberia ao Ministério Público, por denúncia, e não queixa-crime. O crime é formal: não exige conexão à rede nem adulteração efetiva.",
+    "leg-marco-civil",
+  ),
+  q(
+    41,
+    T,
+    "Design e arquitetura",
+    "Em relação ao Design e arquitetura de Software, assinale a opção correta.",
+    [
+      "O Design de Software é o processo de codificação de funcionalidades seguindo diretamente os requisitos do usuário, sem envolver abstrações ou estruturas maiores.",
+      "No Design de Software de baixo nível, o foco está na criação da estrutura geral do sistema, incluindo a definição de módulos e sua interação.",
+      "O Design de Software de alto nível trata de decisões relacionadas à implementação de funções e métodos específicos dentro dos componentes de um sistema.",
+      "A principal diferença entre Design e Arquitetura de Software é que a Arquitetura foca em decisões amplas e estruturais, enquanto o Design foca em decisões detalhadas e específicas.",
+      "A Arquitetura de Software é um conceito aplicado apenas em projetos de grande escala, sendo irrelevante para sistemas menores e simples.",
+    ],
+    3,
+    "Arquitetura trata da estrutura e das decisões de maior custo de mudança; Design detalha componentes e implementação. As alternativas (B) e (C) invertem alto e baixo nível, e (E) erra ao supor que sistema pequeno não tem arquitetura.",
+    "esp-arquitetura",
+  ),
+  q(
+    42,
+    T,
+    "Blockchain",
+    "Em um sistema de blockchain tradicional, cada bloco armazena informações importantes para garantir a integridade e a validação das transações.\nConsiderando a estrutura de blockchains públicas como Bitcoin e Ethereum, o elemento que **não** é armazenado diretamente em um bloco",
+    [
+      "é o Hash do bloco anterior.",
+      "são as Assinaturas digitais das transações.",
+      "é o Registro de saldo das carteiras participantes.",
+      "é o Timestamp (carimbo de tempo).",
+      "são os Dados das transações.",
+    ],
+    2,
+    "A cadeia registra transações, não extratos. No Bitcoin o saldo é derivado das UTXOs não gastas; no Ethereum vive no estado global mantido pelos nós, fora do corpo do bloco. Hash anterior, timestamp, dados e assinaturas ficam no bloco.",
+    "esp-plataformas",
+  ),
+  q(
+    43,
+    T,
+    "Engenharia de requisitos",
+    "Durante o processo de engenharia de requisitos em um projeto de desenvolvimento de software para um sistema bancário, o analista de requisitos identificou que era necessário que a função de saldo de conta passasse a ser realizada em tempo real. Para isso, ele utilizou uma entrevista com o gerente do projeto e uma sessão de brainstorming com a equipe de desenvolvimento.\nNesse contexto, é correto afirmar que",
+    [
+      "o requisito identificado é funcional, pois descreve uma funcionalidade específica do sistema que o usuário deve ser capaz de executar.",
+      "o requisito identificado é não funcional, pois está relacionado ao desempenho do sistema ao apresentar informações em tempo real.",
+      "a entrevista com o gerente do projeto é um exemplo de técnica de prototipação, uma vez que visa a construção de um modelo para validar os requisitos.",
+      "a sessão de brainstorming com a equipe de desenvolvimento é uma técnica inadequada para elicitação de requisitos, pois deve-se usar apenas entrevistas formais com os usuários finais.",
+      "o processo de engenharia de requisitos geralmente ocorre após a fase de implementação do software, pois é necessário ter o software em funcionamento para capturar as necessidades dos usuários.",
+    ],
+    1,
+    "Consultar saldo é funcional, mas “em tempo real” é restrição de desempenho — atributo de qualidade, portanto requisito não funcional. Brainstorming é técnica válida de elicitação, entrevista não é prototipação, e a engenharia de requisitos precede a implementação.",
+    "esp-engenharia",
+  ),
+  q(
+    44,
+    T,
+    "Web services",
+    "Uma empresa de comércio eletrônico decidiu integrar seus sistemas de pagamento usando uma arquitetura orientada a serviços e web services como a tecnologia de integração. A ação correta na implementação dessa solução para garantir baixo acoplamento e alta interoperabilidade entre os sistemas seria",
+    [
+      "usar RESTful Web Services, que permitem a comunicação entre os sistemas de forma leve e independente de plataforma, promovendo maior flexibilidade e baixo acoplamento entre os serviços.",
+      "implementar serviços SOAP sem definição de contratos formais para aumentar a flexibilidade da comunicação entre o sistema de pagamento e os provedores.",
+      "utilizar interoperabilidade de rede entre os serviços de pagamento e os provedores, pois isso assegura baixo acoplamento e que as mudanças em um dos serviços se reflitam diretamente no outro, evitando inconsistências.",
+      "definir um modelo de arquitetura monolítica com todos os provedores de pagamento integrados diretamente ao sistema, eliminando a necessidade de comunicação via Web Services e, assim, melhorando o desempenho.",
+      "empregar Web Services com RPC (Remote Procedure Call) e WDSL para garantir que a chamada dos métodos seja feita diretamente entre o sistema de pagamento e os provedores, simplificando a integração.",
+    ],
+    0,
+    "REST é leve, independente de plataforma e favorece baixo acoplamento. SOAP sem contrato formal quebra a interoperabilidade, que depende do WSDL; e “mudanças em um serviço se refletirem diretamente no outro” é a definição de alto acoplamento, exatamente o que se quer evitar.",
+    "esp-arquitetura",
+  ),
+  q(
+    45,
+    T,
+    "Servidores web",
+    "No contexto da arquitetura de aplicações para ambientes web, é fundamental compreender a função e a distinção entre os diversos tipos de servidores utilizados, como o servidor de aplicações e o servidor web.\nAssinale a opção que apresenta corretamente as características dos servidores na arquitetura web.",
+    [
+      "O servidor de aplicações é responsável exclusivamente pelo envio de páginas estáticas (HTML, CSS, JavaScript), enquanto o servidor web processa lógica de negócios e acessa bancos de dados.",
+      "O servidor web tem como principal função processar requisições HTTP e enviar páginas estáticas ou dinâmicas ao cliente, enquanto o servidor de aplicações fornece uma camada intermediária para execução de lógica de negócios e integração com bancos de dados.",
+      "O servidor de aplicações é responsável por gerenciar o tráfego HTTP, enquanto o servidor web faz o papel de intermediar requisições a sistemas legados e bancos de dados.",
+      "O servidor web e o servidor de aplicações são essencialmente o mesmo, pois ambos servem conteúdos dinâmicos e processam a lógica de negócios da aplicação.",
+      "O servidor de aplicações apenas faz o balanceamento de carga entre diferentes servidores web, sem processar requisições de lógica de negócios ou conectar-se a bancos de dados.",
+    ],
+    1,
+    "É a separação usual: o servidor web (Apache, Nginx) atende HTTP e serve conteúdo; o servidor de aplicações (Tomcat, WildFly) executa a lógica de negócio e integra bancos. As demais invertem os papéis ou os confundem.",
+    "esp-arquitetura",
+  ),
+  q(
+    46,
+    T,
+    "Métricas de software",
+    "Em projetos de desenvolvimento de software, a escolha da técnica de mensuração de tamanho e esforço é essencial para a gestão eficiente e o planejamento adequado das atividades.\nNesse contexto, é correto afirmar que",
+    [
+      "o Ponto de Função oferece uma mensuração objetiva e independente do time de desenvolvimento.",
+      "os Story Points permitem uma melhor padronização de estimativas entre diferentes projetos e times.",
+      "o Ponto de Função é mais flexível, já que leva em conta o contexto subjetivo do time ao estimar o esforço.",
+      "os Story Points são mais adequados para contratos formais de desenvolvimento, como projetos com escopo fechado e orçamentos rígidos.",
+      "o Ponto de Função permite uma mensuração rápida, já que a estimativa é feita com base no esforço percebido pelo time.",
+    ],
+    0,
+    "Ponto de Função mede tamanho funcional por norma (ISO/IEC 20926), de forma objetiva e independente da equipe. Story Points são relativos ao time, não se comparam entre times e não servem bem a contrato de escopo fechado.",
+    "esp-agil",
+  ),
+  q(
+    47,
+    T,
+    "Métodos ágeis",
+    "Em um projeto de alta complexidade, sujeito a mudanças frequentes nos requisitos e com a necessidade de entregas rápidas em ciclos incrementais, a metodologia ágil mais adequada para priorizar o valor ao cliente por meio de feedback contínuo e promover a colaboração da equipe é a",
+    [
+      "Scrum, por organizar o trabalho em sprints fixas, com foco em entregas incrementais de software e adaptações baseadas em revisões periódicas.",
+      "Kanban, por utilizar um fluxo contínuo de trabalho, permitindo a entrega de funcionalidades conforme são concluídas, sem ciclos fechados de tempo.",
+      "XP (Extreme Programming), por enfatizar práticas como programação em par, testes automatizados e integração contínua, visando adaptação rápida a mudanças.",
+      "Waterfall (Cascata), por ser uma metodologia linear e estruturada, permitindo controle e planejamento durante as fases do projeto.",
+      "Lean, por eliminar desperdícios e otimizar o uso de recursos em projetos complexos, buscando entregas mais eficientes.",
+    ],
+    0,
+    "O enunciado pede ciclos incrementais, feedback contínuo e colaboração: é a descrição do Scrum. “Ciclos” elimina o Kanban, que é fluxo contínuo sem iterações fechadas; o XP responde pelas práticas técnicas, não pela estrutura de inspeção e adaptação.",
+    "esp-agil",
+  ),
+  q(
+    48,
+    T,
+    "Spring",
+    "No desenvolvimento de software, os frameworks Spring, Spring Cloud, Spring Boot, Hibernate e JUnit desempenham papéis importantes na construção de aplicações modernas. Assinale a opção correta em relação às características e finalidades desses frameworks.",
+    [
+      "O Spring Boot é responsável por fornecer uma solução para desenvolvimento de microsserviços escaláveis, enquanto o Spring Cloud facilita a configuração e o gerenciamento de sistemas distribuídos.",
+      "O Hibernate é um framework de teste para aplicações Java, amplamente utilizado em conjunto com o JUnit para realizar testes de unidade.",
+      "O Spring é um framework voltado exclusivamente para o desenvolvimento de aplicações monolíticas, não oferecendo suporte para arquiteturas baseadas em microsserviços.",
+      "O JUnit é um framework de persistência utilizado para o mapeamento objeto-relacional (ORM), permitindo interações eficientes com bancos de dados.",
+      "O Spring Boot elimina a necessidade de configuração manual de dependências e servidores de aplicação, mas exige o uso de servidores como Tomcat e JBoss em modo standalone.",
+    ],
+    0,
+    "Boot acelera a criação de serviços e Cloud fornece os recursos de sistemas distribuídos. As demais trocam os papéis: Hibernate é ORM (não teste), JUnit é teste (não ORM), Spring atende também microsserviços, e Boot embarca o servidor em vez de exigir um standalone.",
+    "esp-plataformas",
+  ),
+  q(
+    49,
+    T,
+    "Redes corporativas",
+    "Uma empresa multinacional está implantando diferentes tipos de redes para melhorar a comunicação e o compartilhamento de informações entre seus funcionários, parceiros e clientes. Cada tipo de rede tem finalidades e características distintas, como o nível de acesso e o público-alvo.\nCom base nos conceitos de Internet, extranet, intranet e portal, assinale a opção que descreve corretamente o uso dessas redes em um ambiente corporativo.",
+    [
+      "A intranet é uma rede pública global que conecta milhões de computadores ao redor do mundo, permitindo a comunicação e o compartilhamento de informações sem restrições.",
+      "A extranet permite que organizações compartilhem informações internamente, sendo acessível apenas por funcionários dentro da rede corporativa.",
+      "O portal corporativo interno é uma página da web acessada publicamente, centralizando informações e serviços para usuários externos, como clientes e fornecedores.",
+      "A Internet é uma rede restrita, acessível apenas a usuários autorizados, projetada para compartilhar informações dentro de uma organização.",
+      "A extranet é uma rede que utiliza tecnologias da Internet para permitir o acesso controlado a informações e serviços de uma organização, tanto para usuários internos quanto para parceiros externos autorizados.",
+    ],
+    4,
+    "A extranet estende recursos corporativos a parceiros com controle de acesso. As demais trocam as definições: (A) descreve a Internet chamando-a de intranet, (B) descreve a intranet chamando-a de extranet, (C) confunde portal interno com público e (D) descreve a intranet chamando-a de Internet.",
+    "esp-arquitetura",
+  ),
+  q(
+    50,
+    T,
+    "SPA e PWA",
+    "Considerando as definições e características de SPA (Single Page Application) e PWA (Progressive Web Application), assinale a opção correta sobre suas principais diferenças e aplicações.",
+    [
+      "Ambas SPA e PWA dependem exclusivamente de frameworks JavaScript para funcionar, sendo que sem eles essas tecnologias não podem ser implementadas.",
+      "Uma SPA carrega todas as interações do usuário em uma única página sem a necessidade de recarregar a página, enquanto uma PWA é projetada para funcionar como um site com funcionalidades nativas.",
+      "O foco principal de uma PWA é fornecer uma experiência de página única similar a uma SPA, com o objetivo de evitar recarregamentos completos de página.",
+      "SPAs requerem Service Workers para fornecer funcionalidades como cache e notificações, característica fundamental para seu funcionamento offline.",
+      "Uma SPA depende exclusivamente de um navegador para ser executada, enquanto uma PWA pode ser instalada diretamente no sistema operacional do dispositivo como um aplicativo nativo.",
+    ],
+    1,
+    "SPA troca o conteúdo sem recarregar a página; PWA é aplicação web com capacidades nativas. Service Worker é requisito de PWA, não de SPA, e o foco da PWA não é a experiência de página única.",
+    "esp-arquitetura",
+  ),
+  q(
+    51,
+    T,
+    "SOLID",
+    "Em um projeto de software utilizando orientação a objetos, foi implementado o código em Java reproduzido no texto de apoio.\nCom base no princípio de Substituição de Liskov (L), que faz parte dos princípios SOLID, em relação à implementação do método emitirSom, assinale a opção correta.",
+    [
+      "A classe Cachorro não pode sobrescrever o método emitirSom, pois isso viola o princípio da Substituição de Liskov.",
+      "O princípio da Substituição de Liskov é violado porque a classe Cachorro altera o comportamento do método emitirSom herdado de Animal.",
+      "O código está de acordo com o princípio da Substituição de Liskov, já que a classe Cachorro pode ser usada no lugar da classe Animal sem comprometer a corretude do programa.",
+      "O princípio da Substituição de Liskov exige que o método emitirSom de Cachorro seja exatamente igual ao de Animal.",
+      "A implementação fere o princípio da Substituição de Liskov porque o método sobrescrito deve lançar uma exceção quando chamado.",
+    ],
+    2,
+    "Sobrescrever é polimorfismo, o objetivo da herança — não viola LSP. O princípio só é ferido quando o subtipo quebra o contrato: lança exceção onde a base não lançava, fortalece pré-condições ou enfraquece pós-condições.",
+    "esp-engenharia",
+    `class Animal {
+    void emitirSom() {
+        System.out.println("Som genérico");
+    }
+}
 
-"A digitalização dos serviços previdenciários reduziu as filas físicas e abreviou o tempo de resposta aos cidadãos. Contudo, essa aparente onipresença da tecnologia não pode ocultar a persistência de um contingente de brasileiros para quem o acesso a um smartphone conectado é ainda uma ficção distante."
-
-A partir da leitura do fragmento, infere-se corretamente que:`,
-    options: [
-      "A digitalização dos serviços públicos foi ineficaz no combate à lentidão dos processos previdenciários.",
-      "A modernização tecnológica dos serviços estatais traz consigo o risco de aprofundar desigualdades de acesso para parcelas vulneráveis da população.",
-      "O uso de smartphones conectados é a única via viável para viabilizar a cidadania plena no Brasil contemporâneo.",
-      "A burocracia dos órgãos previdenciários é atribuível exclusivamente à preferência popular pelo atendimento presencial.",
-      "A tecnologia deve ser suprimida dos órgãos públicos enquanto houver cidadãos desprovidos de conectividade."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): O fragmento destaca que, embora a digitalização tenha trazido benefícios evidentes ("reduziu as filas físicas e abreviou o tempo de resposta"), ela convive com uma realidade em que parte dos cidadãos não tem acesso a smartphone conectado ("ficção distante"). Portanto, a tecnologia sem políticas de inclusão corre o risco de marginalizar quem não tem acesso digital.
-
-Análise das alternativas incorretas:
-- A: Incorreta. O texto afirma expressamente o oposto ("reduziu as filas físicas e abreviou o tempo de resposta").
-- C: Incorreta. Extrapolação. O texto não coloca o smartphone como a única via possível, mas exemplifica a barreira enfrentada por quem não o possui.
-- D: Incorreta. Não há qualquer menção a preferência popular por filas, nem que a burocracia derive disso.
-- E: Incorreta. O texto não defende o abandono da tecnologia, e sim alerta para a necessidade de atenção àqueles que ainda estão excluídos dela.`
-  },
-  {
-    id: 2,
-    subject: "Língua Portuguesa",
-    subtopic: "Coesão Referencial e Pronomes",
-    theoryRef: "portugues-coesao",
-    statement: `Em: "Os analistas de dados examinaram os registros de transações anômalas e encaminharam-nos aos auditores da autarquia, aos quais caberá deliberar sobre as medidas sancionatórias cabíveis."
-
-Os termos sublinhados "nos" (em "encaminharam-nos") e "aos quais" exercem papel de coesão anafórica referindo-se, respectiva e contextualmente, a:`,
-    options: [
-      "analistas de dados / auditores da autarquia",
-      "registros de transações anômalas / analistas de dados",
-      "registros de transações anômalas / auditores da autarquia",
-      "analistas de dados / medidas sancionatórias",
-      "registros de transações anômalas / registros de transações"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-1. No verbo "encaminharam-nos", o pronome oblíquo enclítico "nos" (variante de "os" após terminação nasal "-am") substitui o objeto direto "os registros de transações anômalas" (quem encaminha, encaminha algo a alguém).
-2. A locução pronominal relativa "aos quais" introduz oração subordinada adjetiva e retoma o termo imediatamente antecedente "aos auditores da autarquia", a quem caberá a deliberação.
-
-As demais opções erram ao trocar a referência dos pronomes anafóricos.`
-  },
-  {
-    id: 3,
-    subject: "Língua Portuguesa",
-    subtopic: "Conectivos e Relações Semânticas",
-    theoryRef: "portugues-conectivos",
-    statement: `Assinale a frase em que o conectivo destacado introduz uma relação de CONCESSÃO:`,
-    options: [
-      "Visto que os servidores foram migrados para a nuvem, a latência do sistema caiu vertiginosamente.",
-      "Conquanto houvesse instabilidade intermitente na infraestrutura elétrica, os testes de carga prosseguiram sem interrupções.",
-      "À medida que a equipe refinava o backlog, as estimativas de entrega tornavam-se mais previsíveis.",
-      "Caso o comitê de segurança aprove a nova política de senhas, o deploy será autorizado de imediato.",
-      "Para que o aplicativo previdenciário atinja todos os municípios, convênios de conectividade foram firmados."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): A conjunção subordinativa "Conquanto" é puramente concessiva (equivale a "embora", "ainda que", "posto que", "apesar de que"), indicando um obstáculo que não foi capaz de impedir o fato expresso na oração principal ("os testes prosseguiram").
-
-Análise das demais alternativas:
-- A: "Visto que" introduz causa (causal).
-- C: "À medida que" introduz proporcionalidade (proporcional).
-- D: "Caso" introduz hipótese ou condição (condicional).
-- E: "Para que" introduz finalidade/objetivo (final).`
-  },
-  {
-    id: 4,
-    subject: "Língua Portuguesa",
-    subtopic: "Regência e Uso da Crase",
-    theoryRef: "portugues-regencia-crase",
-    statement: `A crase está empregada em estrita conformidade com o padrão culto da língua portuguesa em:`,
-    options: [
-      "O novo protocolo de comunicação interna visa à otimizar o fluxo de chamados de suporte técnico.",
-      "Os estagiários foram instruídos a prestar assistência à qualquer usuário que apresente dúvidas no portal.",
-      "O comitê gestor submeteu a proposta de governança à comissão de ética e transparência da instituição.",
-      "A implementação do software foi realizada à partir de diretrizes fixadas no início do exercício orçamentário.",
-      "Os técnicos deslocaram-se à pé até o datacenter reserva localizado no bloco adjacente."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): O verbo "submeter" é transitivo direto e indireto (submete algo A alguém/instituição). A regência exige a preposição "a", que se funde ao artigo feminino definido "a" do substantivo feminino determinado "comissão de ética" -> "à comissão".
-
-Análise das alternativas incorretas:
-- A: Erro crasso. Antes de verbo no infinitivo ("otimizar") NUNCA ocorre crase.
-- B: Erro. "Qualquer" é pronome indefinido que repele artigo definido feminino, logo não há crase.
-- D: Erro. "A partir de" é locução iniciada por verbo ("partir"); não há artigo, logo sem crase.
-- E: Erro. "Pé" é substantivo masculino; antes de palavras masculinas usa-se apenas a preposição "a" (a pé, a cavalo, a prazo).`
-  },
-  {
-    id: 5,
-    subject: "Língua Portuguesa",
-    subtopic: "Concordância Verbal e Nominal",
-    theoryRef: "portugues-concordancia",
-    statement: `Assinale a frase em que a concordância verbal atende integralmente à norma culta:`,
-    options: [
-      "Devem haver mecanismos automáticos de verificação de integridade no banco de dados.",
-      "Mais de um analista e mais de um arquiteto discordou da decisão de descontinuar a API legada.",
-      "Faziam três semanas que a equipe de operações monitorava a vulnerabilidade crítica de dia zero.",
-      "Tratam-se de requisições de acesso administrativo com privilégios elevados que exigem autenticação multifator.",
-      "A maior parte dos incidentes de segurança registrados em 2024 foram causados por falhas humanas de configuração."
-    ],
-    correctAnswer: 4, // E
-    explanation: `Gabarito Oficial Comentado:
-Alternativa E (CORRETA): Com expressões partitivas ("a maior parte de", "a maioria de", "grande número de") seguidas de substantivo no plural ("dos incidentes"), a norma gramatical admite a concordância tanto no singular (concordância lógica com o núcleo "a maior parte") quanto no plural (concordância atrativa com o adjunto "dos incidentes foram causados"). A frase é, portanto, perfeitamente válida e abonada pela banca FGV.
-
-Erros das demais:
-- A: "Haver" no sentido de existir é impessoal. O verbo auxiliar "dever" deve ficar obrigatoriamente no singular: "Deve haver mecanismos".
-- B: A repetição da expressão "mais de um... e mais de um..." exige o verbo no plural ("discordaram").
-- C: "Fazer" indicando tempo decorrido é impessoal: "Fazia três semanas".
-- D: Em "Trata-se de...", o "se" é índice de indeterminação do sujeito; o verbo fica obrigatoriamente no singular na 3ª pessoa: "Trata-se de requisições".`
-  },
-  {
-    id: 6,
-    subject: "Língua Portuguesa",
-    subtopic: "Pontuação e Estilo",
-    theoryRef: "portugues-pontuacao",
-    statement: `Assinale a alternativa em que a supressão da(s) vírgula(s) ALTERA o sentido original da oração, transformando uma explicação em uma restrição:`,
-    options: [
-      "Os técnicos, rapidamente, isolaram o segmento de rede infectado pelo malware.",
-      "Os computadores da estatal, que não possuíam o patch de segurança instalado, foram temporariamente desconectados.",
-      "No final do expediente de sexta-feira, os relatórios de auditoria foram devidamente despachados.",
-      "A governança corporativa, por conseguinte, exige atualização permanente dos manuais de conformidade.",
-      "Segundo os relatórios preliminares, a migração para a nova arquitetura reduziu os custos operacionais."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): A oração "que não possuíam o patch de segurança instalado" é uma oração subordinada adjetiva explicativa quando isolada por vírgulas (indicando que TODOS os computadores da estatal estavam sem o patch e foram desconectados). Ao retirar as vírgulas, ela se torna adjetiva restritiva, alterando o sentido para: APENAS aqueles computadores específicos que não possuíam o patch foram desconectados.
-
-As demais alternativas:
-- A, C, E: Adjuntos adverbiais deslocados (a retirada da vírgula é mero ajuste estilístico/sintático, sem alterar classe da oração).
-- D: Conjunção conclusiva explicativa interposta ("por conseguinte").`
-  },
-  {
-    id: 7,
-    subject: "Língua Portuguesa",
-    subtopic: "Semântica e Polissemia (Estilo FGV)",
-    theoryRef: "portugues-semantica",
-    statement: `A FGV costuma explorar a sutil fronteira entre termos sinônimos no discurso administrativo. Assinale a opção em que a palavra destacada NÃO pode ser substituída pelo termo entre parênteses sem prejuízo semântico ao texto:`,
-    options: [
-      "O diretor reiterou (reafirmou) a urgência da contratação de ferramentas de observabilidade.",
-      "As decisões do colegiado foram respaldadas (fundamentadas) por relatórios periciais independentes.",
-      "O incidente acarretou (prescindiu) danos colaterais ao ecossistema de microsserviços.",
-      "O plano de contingência prevê a mitigação (atenuação) dos riscos de indisponibilidade.",
-      "O parecer jurídico considerou a medida consentânea (compatível) com a legislação vigente."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): "Acarretar" significa provocar, ocasionar, trazer como consequência. Por outro lado, "prescindir" significa dispensar, abrir mão, desconsiderar (sentido quase oposto). A troca altera radicalmente e compromete o significado da sentença.
-
-Nas opções A, B, D e E as substituições são sinônimos perfeitos no contexto culto formal.`
-  },
-  {
-    id: 8,
-    subject: "Língua Portuguesa",
-    subtopic: "Tipologia e Gêneros Textuais",
-    theoryRef: "portugues-tipologia",
-    statement: `Analise o seguinte trecho:
-
-"Para configurar o acesso VPN à rede corporativa da Dataprev, abra o cliente OpenVPN, importe o arquivo de perfil 'perfil_seguro.ovpn', insira sua credencial de rede com duplo fator e clique em 'Conectar'. Nunca compartilhe o arquivo de configuração com terceiros."
-
-Quanto à tipologia textual predominante, trata-se de um texto:`,
-    options: [
-      "Predominantemente narrativo, com ênfase na progressão temporal de fatos reais.",
-      "Injuntivo (instrucional), caracterizado por orientações procedimentais e verbos no imperativo.",
-      "Dissertativo-argumentativo, estruturado para convencer o leitor mediante teses e contra-argumentos.",
-      "Expositivo-didático, voltado unicamente à conceituação teórica de redes virtuais privadas.",
-      "Descritivo estático, centrado no detalhamento físico e dimensional dos equipamentos de rede."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): O texto possui caráter injuntivo/instrucional. Ele busca orientar e prescrever uma série de ações ao destinatário, utilizando verbos no modo imperativo ("abra", "importe", "insira", "clique", "não compartilhe"), característica típica de manuais técnicos e tutoriais operacionais.`
-  },
-  {
-    id: 9,
-    subject: "Língua Portuguesa",
-    subtopic: "Paralelismo Sintático e Reescrita",
-    theoryRef: "portugues-paralelismo",
-    statement: `O paralelismo sintático exige que orações ou termos coordenados entre si apresentem estruturas gramaticais simétricas. Assinale a sentença que PRESERVA o paralelismo sintático:`,
-    options: [
-      "A diretoria recomendou a revisão dos custos operacionais e que se acelerasse a entrega do módulo previdenciário.",
-      "O novo edital valoriza candidatos com fluência em linguagens modernas e que tenham experiência em nuvem.",
-      "A equipe de governança buscou tanto padronizar as esteiras de deploy quanto automatizar os testes de regressão.",
-      "Durante o workshop, foi debatido sobre segurança de dados e a importância do treinamento de colaboradores.",
-      "O analista preferiu refatorar o código monolítico a participar das reuniões diárias."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): A estrutura correlativa "tanto... quanto..." une duas orações coordenadas reduzidas de infinitivo estritamente simétricas: "padronizar as esteiras..." e "automatizar os testes...".
-
-Falhas nas demais:
-- A: Rompe o paralelismo ao coordenar um substantivo ("a revisão dos custos...") com uma oração desenvolvida subordinada substantiva ("e que se acelerasse...").
-- B: Coordena um adjunto preposicionado ("com fluência...") com uma oração adjetiva ("e que tenham...").
-- D: Mistura o regente com preposição ("debatido sobre...") e outro sem ("e a importância...").
-- E: "Preferir" exige dois termos com a preposição "a": preferiu refatorar a participar (embora aceitável, a opção C é a clássica questão de FGV sobre correlação e simetria perfeita).`
-  },
-  {
-    id: 10,
-    subject: "Língua Portuguesa",
-    subtopic: "Vozes Verbais e Agente da Passiva",
-    theoryRef: "portugues-vozes",
-    statement: `Transpondo a oração "A equipe de arquitetura projetou uma infraestrutura tolerante a falhas" para a VOZ PASSIVA ANALÍTICA, obtém-se:`,
-    options: [
-      "Projetou-se uma infraestrutura tolerante a falhas pela equipe de arquitetura.",
-      "Uma infraestrutura tolerante a falhas foi projetada pela equipe de arquitetura.",
-      "A equipe de arquitetura tinha projetado uma infraestrutura tolerante a falhas.",
-      "Uma infraestrutura tolerante a falhas seria projetada pela equipe de arquitetura.",
-      "Projetara-se uma infraestrutura tolerante a falhas pela equipe de arquitetura."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-- Sujeito ativo: "A equipe de arquitetura" -> torna-se agente da passiva ("pela equipe de arquitetura").
-- Verbo ativo no pretérito perfeito do indicativo: "projetou" -> passa para o verbo auxiliar "ser" no pretérito perfeito ("foi") + particípio do verbo principal ("projetada").
-- Objeto direto: "uma infraestrutura tolerante a falhas" -> torna-se sujeito paciente ("Uma infraestrutura tolerante a falhas foi projetada...").`
-  },
-  {
-    id: 11,
-    subject: "Língua Portuguesa",
-    subtopic: "Figuras de Linguagem e Recursos Estilísticos",
-    theoryRef: "portugues-figuras",
-    statement: `No trecho: "O governo federal injetou mais cérebros na modernização dos serviços tecnológicos da previdência social", a figura de linguagem presente na palavra "cérebros" é classificada como:`,
-    options: [
-      "Metonímia (a parte pelo todo).",
-      "Hipérbole (exagero intencional).",
-      "Eufemismo (suavização de ideia desagradável).",
-      "Prosopopeia (atribuição de qualidades humanas a seres inanimados).",
-      "Antítese (aproximação de termos antagônicos)."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): A palavra "cérebros" é utilizada para designar profissionais qualificados, pesquisadores ou especialistas intelectuais. Essa substituição da totalidade da pessoa por uma parte de seu corpo que simboliza o intelecto é um caso emblemático de Metonímia (sinédoque - a parte pelo todo).`
-  },
-  {
-    id: 12,
-    subject: "Língua Portuguesa",
-    subtopic: "Ambiguidade e Clareza Redacional",
-    theoryRef: "portugues-clareza",
-    statement: `Assinale a frase redigida sem incorreções e livre de duplo sentido (ambiguidade):`,
-    options: [
-      "O auditor comunicou ao gerente que ele havia sido transferido para a filial de Brasília.",
-      "O novo banco de dados superou as expectativas do cliente porque seu desempenho é notável.",
-      "A analista encontrou a colega em sua sala de reunião logo após o término da apresentação.",
-      "O sistema computacional bloqueou automaticamente o login do colaborador que violou a política de senhas.",
-      "O coordenador elogiou o desenvolvedor pelo código que apresentou defeitos na homologação."
-    ],
-    correctAnswer: 3, // D
-    explanation: `Gabarito Oficial Comentado:
-Alternativa D (CORRETA): A oração é clara, objetiva e unívoca. O pronome relativo "que" refere-se imediatamente a "o colaborador", e a relação de causa e efeito está perfeitamente delimitada.
-
-Erros de ambiguidade nas demais:
-- A: "ele" pode se referir tanto ao auditor quanto ao gerente.
-- B: "seu" pode ser o desempenho do banco de dados ou do cliente.
-- C: "em sua sala" gera ambiguidade sobre de quem é a sala (da analista ou da colega).
-- E: Estrutura incoerente e ambígua (elogiou por um código que apresentou defeitos?).`
-  },
-
-  // =========================================================================
-  // BLOC 2: LÍNGUA INGLESA (Questões 13 a 24)
-  // =========================================================================
-  {
-    id: 13,
-    subject: "Língua Inglesa",
-    subtopic: "Reading Comprehension - Cloud Architecture",
-    theoryRef: "ingles-comprehension",
-    statement: `Read the excerpt below:
-
-"In a cloud-native paradigm, horizontal autoscaling dynamically provisions additional compute instances in response to surge in workload demands. Rather than over-provisioning peak-capacity hardware that remains idle during troughs, organizations embrace elastic compute to optimize cost efficiency and maintain sub-second response times for end consumers."
-
-According to the text, the primary benefit of horizontal autoscaling is:`,
-    options: [
-      "Replacing all microservices with monolithic legacy mainframes.",
-      "Guaranteeing that hardware resources always operate at maximum capacity during off-peak hours.",
-      "Adjusting compute capacity dynamically to handle traffic fluctuations while optimizing financial resources.",
-      "Eliminating the need for internet connectivity in public cloud infrastructure.",
-      "Forcing cloud providers to subsidize the entire cost of network bandwidth."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): O texto explicita que a escalabilidade horizontal ("horizontal autoscaling dynamically provisions additional compute instances in response to surge in workload demands") ajusta dinamicamente a capacidade e evita o desperdício de manter hardware ocioso ("Rather than over-provisioning peak-capacity hardware that remains idle during troughs"), otimizando custos e mantendo tempos de resposta rápidos.`
-  },
-  {
-    id: 14,
-    subject: "Língua Inglesa",
-    subtopic: "Vocabulary & Technical Verbs",
-    theoryRef: "ingles-vocabulary",
-    statement: `In the sentence: "To mitigate data exfiltration risks, cybersecurity teams must enforce strict egress traffic inspection on all container pods", the verb MITIGATE is closest in meaning to:`,
-    options: [
-      "Alleviate or reduce",
-      "Exacerbate or intensify",
-      "Overlook or ignore",
-      "Simulate or mimic",
-      "Trigger or generate"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): No vocabulário de cibersegurança e engenharia de software, "to mitigate" significa amenizar, atenuar, reduzir a probabilidade ou o impacto de um risco ("reduce or alleviate").
-- B ("exacerbate") é antônimo (piorar).
-- C ("overlook") significa ignorar.
-- D ("simulate") significa simular.
-- E ("trigger") significa disparar.`
-  },
-  {
-    id: 15,
-    subject: "Língua Inglesa",
-    subtopic: "Discourse Markers and Linkers",
-    theoryRef: "ingles-conectivos",
-    statement: `Choose the connector that appropriately fills the blank expressing CONTRAST:
-
-"The legacy batch process exhibited high throughput; __________, its inability to provide real-time updates rendered it inadequate for the new citizen-facing pension portal."`,
-    options: [
-      "Furthermore",
-      "Consequently",
-      "Nevertheless",
-      "Likewise",
-      "Namely"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): "Nevertheless" (não obstante, contudo, todavia) expressa uma oposição/contraste entre o fato positivo anterior (alto throughput) e a limitação seguinte (incapacidade de atualização em tempo real).
-- A ("Furthermore") expressa adição.
-- B ("Consequently") expressa causa/consequência.
-- D ("Likewise") expressa semelhança.
-- E ("Namely") expressa especificação ("a saber").`
-  },
-  {
-    id: 16,
-    subject: "Língua Inglesa",
-    subtopic: "Passive Voice in Technical Contexts",
-    theoryRef: "ingles-passive",
-    statement: `Consider the technical instruction: "All sensitive encryption keys ________ securely in dedicated Hardware Security Modules (HSMs) prior to cluster bootstrapping."
-
-The grammatically correct passive voice form to complete the sentence is:`,
-    options: [
-      "must store",
-      "must be stored",
-      "must being store",
-      "storing must",
-      "has been store"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): A voz passiva com verbo modal ("must") é estruturada pela fórmula: [MODAL + BE + PARTICÍPIO PASSADO]. Como as chaves sofrem a ação de serem armazenadas, o correto é: "must be stored" (devem ser armazenadas).`
-  },
-  {
-    id: 17,
-    subject: "Língua Inglesa",
-    subtopic: "Modal Verbs & System Requirements",
-    theoryRef: "ingles-modals",
-    statement: `In the IEEE 830 / RFC 2119 standard for requirements specification, which modal verb denotes an ABSOLUTE MANDATORY requirement that a system must fulfill?`,
-    options: [
-      "SHALL",
-      "MAY",
-      "MIGHT",
-      "COULD",
-      "SHOULD"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): Na RFC 2119 e nos padrões de especificação de software, "SHALL" e "MUST" denotam obrigatoriedade estrita e vinculante ("mandatory requirement").
-- "SHOULD" indica uma recomendação (recomendado, mas não mandatório).
-- "MAY", "COULD" e "MIGHT" indicam ações puramente opcionais ou permissivas.`
-  },
-  {
-    id: 18,
-    subject: "Língua Inglesa",
-    subtopic: "Conditional Sentences (Zero Trust & Resilience)",
-    theoryRef: "ingles-conditionals",
-    statement: `Complete the conditional sentence correctly according to standard English grammar:
-
-"If the database cluster ________ a heartbeat loss from the primary node for more than 5 seconds, it automatically ________ failover to the designated standby replica."`,
-    options: [
-      "detects / initiates",
-      "will detect / initiate",
-      "detected / will initiate",
-      "had detected / initiates",
-      "detecting / initiated"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): Trata-se de uma Condicional do Tipo Zero (Zero Conditional), utilizada para leis gerais, verdades científicas ou comportamentos automáticos e determinísticos de sistemas de computação: [If + Simple Present, Simple Present]. Logo: "If the cluster detects... it automatically initiates...".`
-  },
-  {
-    id: 19,
-    subject: "Língua Inglesa",
-    subtopic: "False Cognates in Technology",
-    theoryRef: "ingles-false-cognates",
-    statement: `In computing English, false cognates can induce severe misunderstandings. The word COMPREHENSIVE in "a comprehensive vulnerability assessment" means:`,
-    options: [
-      "Compreensivo (que demonstra empatia e tolerância emocional)",
-      "Abrangente, minucioso e completo",
-      "Compacto e sintetizado",
-      "Comprimido por algoritmos de compressão gzip",
-      "Temporário ou provisório"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): "Comprehensive" é um falso amigo clássico. NÃO significa "compreensivo" (que em inglês é *understanding* ou *sympathetic*), mas sim amplo, detalhado, abrangente e completo (*thorough, complete, exhaustive*).`
-  },
-  {
-    id: 20,
-    subject: "Língua Inglesa",
-    subtopic: "Technical Definitions - Microservices & SRE",
-    theoryRef: "ingles-tech-definitions",
-    statement: `In Site Reliability Engineering (SRE), LATENCY is best defined as:`,
-    options: [
-      "The total financial expenditure accrued from operating serverless computing instances.",
-      "The duration of time it takes for a data packet or web request to travel from source to destination and return a response.",
-      "The volume of concurrent users permitted to authenticate simultaneously on a single node.",
-      "The percentage of storage capacity occupied by log files inside a database volume.",
-      "The physical temperature generated by graphics processing units inside server racks."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): Em computação e SRE, "latency" (latência) é o atraso ou tempo decorrido para que uma requisição/pacote viaje pela rede e receba uma resposta ("duration of time it takes for a request to travel from source to destination and return").`
-  },
-  {
-    id: 21,
-    subject: "Língua Inglesa",
-    subtopic: "Pronoun Reference in Technical Texts",
-    theoryRef: "ingles-pronouns",
-    statement: `In the sentence: "The caching layer intercepts incoming queries, verifying whether THEIR requested payloads have already been stored in memory", the pronoun THEIR refers back to:`,
-    options: [
-      "The caching layer",
-      "Incoming queries",
-      "Requested payloads",
-      "Memory sectors",
-      "Security tokens"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): O pronome possessivo plural "their" qualifica "requested payloads" (cargas úteis solicitadas) pertencentes a "incoming queries" (consultas recebidas). As consultas são quem possui ou solicita as respectivas cargas úteis.`
-  },
-  {
-    id: 22,
-    subject: "Língua Inglesa",
-    subtopic: "Reading Comprehension - Zero Trust Architecture",
-    theoryRef: "ingles-zerotrust",
-    statement: `Read the paragraph below:
-
-"The Zero Trust security model operates on the principle of 'never trust, always verify'. Unlike conventional perimeter-based network security, Zero Trust treats all communication requests as potentially malicious, requiring explicit continuous verification, least-privilege access, and automated threat mitigation regardless of whether the user is inside or outside the corporate firewall."
-
-According to the text, Zero Trust:`,
-    options: [
-      "Assumes that all actors inside the internal network perimeter are inherently trustworthy.",
-      "Relies entirely on passwords without requiring any secondary identity verification factor.",
-      "Abandons the assumption of implicit trust based on network physical location.",
-      "Disables logging mechanisms to prevent data storage overload.",
-      "Restricts cryptographic mechanisms exclusively to wireless network devices."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA): O princípio central do modelo Zero Trust é que a localização de rede (estar dentro do firewall corporativo) não confere confiança implícita ("regardless of whether the user is inside or outside the corporate firewall"), abandonando o conceito de confiança perimetral tradicional.`
-  },
-  {
-    id: 23,
-    subject: "Língua Inglesa",
-    subtopic: "Phrasal Verbs in Software Engineering",
-    theoryRef: "ingles-phrasal-verbs",
-    statement: `Which phrasal verb means "to introduce and deploy a new software version progressively to users"?`,
-    options: [
-      "Roll out",
-      "Back down",
-      "Give up",
-      "Look down",
-      "Run out"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): "To roll out" significa lançar, disponibilizar ou implantar gradualmente um produto, funcionalidade ou sistema ("progressive software deployment").
-- "Back down": recuar.
-- "Give up": desistir.
-- "Look down": desdenhar.
-- "Run out": esgotar-se.`
-  },
-  {
-    id: 24,
-    subject: "Língua Inglesa",
-    subtopic: "Technical Documentation Translation & Synthesis",
-    theoryRef: "ingles-synthesis",
-    statement: `Choose the alternative that accurately translates: "Fault tolerance ensures that a distributed system remains operational despite the unforeseen crash of arbitrary worker nodes."`,
-    options: [
-      "A tolerância a falhas garante que um sistema distribuído permaneça operacional a despeito do travamento imprevisto de nós de trabalho arbitrários.",
-      "A tolerância a falhas exige que um sistema distribuído paralise suas operações após a quebra deliberada de nós principais.",
-      "O sistema operacional distribuído tolera que nós de trabalho quebrem sem emitir notificações de rede.",
-      "A tolerância a falhas impede que nós arbitrários acessem a memória do sistema quando há queda de energia.",
-      "Sistemas distribuídos operam com lentidão imprevista toda vez que nós trabalhadores são inicializados."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): A tradução é exata e precisa tecnicamente. "Despite" traduz-se como "a despeito de" ou "apesar de"; "unforeseen crash" corresponde a "travamento imprevisto" ou "falha não planejada"; e "worker nodes" a "nós de trabalho".`
-  },
-
-  // =========================================================================
-  // BLOC 3: RACIOCÍNIO LÓGICO-MATEMÁTICO (Questões 25 a 30)
-  // =========================================================================
-  {
-    id: 25,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Negação de Proposições Compostas (Leis de De Morgan)",
-    theoryRef: "rlm-de-morgan",
-    statement: `Considere a proposição:
-
-"Se o commit for validado pelo pipeline de testes, então o deploy será executado em produção."
-
-A NEGAÇÃO LÓGICA dessa proposição condicional é dada por:`,
-    options: [
-      "Se o commit não for validado pelo pipeline de testes, então o deploy não será executado em produção.",
-      "O commit é validado pelo pipeline de testes e o deploy não é executado em produção.",
-      "O commit não é validado pelo pipeline de testes ou o deploy é executado em produção.",
-      "Se o deploy for executado em produção, então o commit foi validado pelo pipeline de testes.",
-      "O commit não é validado pelo pipeline de testes e o deploy não é executado em produção."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-A negação lógica de uma condicional da forma P -> Q segue a regra mnemônica clássica "MANÉ" (Mantém a primeira E Nega a segunda):
-~(P -> Q) <=> P e ~Q.
-Sendo:
-P: "O commit é validado pelo pipeline de testes"
-Q: "O deploy é executado em produção"
-A negação é: "O commit é validado pelo pipeline de testes E o deploy NÃO é executado em produção".`
-  },
-  {
-    id: 26,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Equivalências Lógicas do Condicional",
-    theoryRef: "rlm-equivalencias",
-    statement: `Dizer que "Se um banco de dados é relacional, então ele suporta propriedades ACID" é LOGICAMENTE EQUIVALENTE a dizer que:`,
-    options: [
-      "Se um banco de dados suporta propriedades ACID, então ele é relacional.",
-      "Se um banco de dados não suporta propriedades ACID, então ele não é relacional.",
-      "Um banco de dados é relacional ou ele suporta propriedades ACID.",
-      "Se um banco de dados não é relacional, então ele não suporta propriedades ACID.",
-      "Ou o banco de dados é relacional, ou ele suporta propriedades ACID, mas não ambos."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Uma condicional (P -> Q) possui duas equivalências lógicas fundamentais:
-1. Contrapositiva: P -> Q <=> ~Q -> ~P (Inverte e nega ambas).
-2. Disjuntiva: P -> Q <=> ~P ou Q.
-
-Pela contrapositiva:
-P: "O banco de dados é relacional"
-Q: "Ele suporta propriedades ACID"
-A contrapositiva é: "Se ele NÃO suporta propriedades ACID, então ele NÃO é relacional" (~Q -> ~P).`
-  },
-  {
-    id: 27,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Diagramas de Venn e Conjuntos",
-    theoryRef: "rlm-conjuntos",
-    statement: `Em uma equipe técnica da Dataprev com 60 colaboradores:
-- 38 dominam a linguagem Java;
-- 30 dominam a linguagem Python;
-- 8 colaboradores não dominam nenhuma dessas duas linguagens.
-
-O número de colaboradores dessa equipe que dominam SIMULTANEAMENTE as linguagens Java e Python é igual a:`,
-    options: [
-      "12",
-      "14",
-      "16",
-      "18",
-      "22"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Total de colaboradores = 60.
-Colaboradores que não dominam nenhuma = 8.
-Portanto, a união dos conjuntos Java e Python é:
-n(Java U Python) = 60 - 8 = 52.
-
-Pela fórmula da união de dois conjuntos:
-n(Java U Python) = n(Java) + n(Python) - n(Java ∩ Python)
-52 = 38 + 30 - n(Java ∩ Python)
-52 = 68 - n(Java ∩ Python)
-n(Java ∩ Python) = 68 - 52 = 16.
-
-Exatamente 16 colaboradores dominam ambas as linguagens.`
-  },
-  {
-    id: 28,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Princípio da Casa dos Pombos",
-    theoryRef: "rlm-pombos",
-    statement: `Um datacenter dispõe de 5 racks idênticos numerados de 1 a 5 para alocar 26 novos servidores físicos de missão crítica.
-
-Com base exclusivamente no Princípio da Casa dos Pombos (Princípio das Gavetas de Dirichlet), é CORRETO afirmar com certeza absoluta que:`,
-    options: [
-      "Todos os 5 racks receberão exatamente a mesma quantidade de servidores.",
-      "Pelo menos um rack receberá 6 ou mais servidores.",
-      "Nenhum rack receberá mais de 5 servidores.",
-      "O rack número 1 necessariamente receberá a maior quantidade de servidores.",
-      "Haverá exatamente um rack com 2 servidores."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Pelo Princípio da Casa dos Pombos generalizado:
-Se dividirmos 26 servidores (pombos) por 5 racks (casas):
-26 / 5 = 5 com resto 1.
-Se cada um dos 5 racks recebesse no máximo 5 servidores, teríamos 5 * 5 = 25 servidores alocados.
-Como há 26 servidores, pelo menos um rack obrigatoriamente terá que receber no mínimo 5 + 1 = 6 servidores.`
-  },
-  {
-    id: 29,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Análise Combinatória",
-    theoryRef: "rlm-combinatoria",
-    statement: `Para compor uma comissão avaliadora de segurança cibernética na Dataprev, devem ser escolhidos 3 especialistas entre um grupo de 8 analistas disponíveis.
-
-De quantas maneiras distintas essa comissão de 3 membros pode ser formada?`,
-    options: [
-      "24",
-      "56",
-      "120",
-      "336",
-      "512"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Como a ordem dos membros escolhidos dentro da comissão não altera a comissão (escolher {A, B, C} é o mesmo que {C, B, A}), trata-se de uma Combinação Simples de 8 elementos tomados 3 a 3:
-C(8, 3) = 8! / [3! * (8 - 3)!]
-C(8, 3) = (8 * 7 * 6) / (3 * 2 * 1) = 336 / 6 = 56 maneiras distintas.`
-  },
-  {
-    id: 30,
-    subject: "Raciocínio Lógico-Matemático",
-    subtopic: "Probabilidade Clássica e Condicional",
-    theoryRef: "rlm-probabilidade",
-    statement: `Em um lote com 100 discos de estado sólido (SSDs) recém-adquiridos para um cluster de armazenamento, sabe-se que 6 apresentam defeito de fabricação.
-
-Se 2 SSDs forem retirados sucessivamente e ao acaso, SEM reposição, a probabilidade de que AMBOS os discos retirados apresentem defeito de fabricação é:`,
-    options: [
-      "1 / 330",
-      "3 / 500",
-      "3 / 100",
-      "1 / 165",
-      "6 / 1000"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA):
-- Probabilidade de o 1º disco ser defeituoso: P(1º defeituoso) = 6 / 100.
-- Como a retirada é SEM reposição, restam 99 discos no lote e 5 defeituosos.
-- Probabilidade de o 2º disco ser defeituoso dado que o 1º foi: P(2º defeituoso | 1º) = 5 / 99.
-- Probabilidade de ambos serem defeituosos:
-P = (6 / 100) * (5 / 99) = 30 / 9900 = 3 / 990 = 1 / 330.`
-  },
-
-  // =========================================================================
-  // BLOC 4: ATUALIDADES (Questões 31 a 35)
-  // =========================================================================
-  {
-    id: 31,
-    subject: "Atualidades",
-    subtopic: "Transformação Digital e Governo Eletrônico",
-    theoryRef: "atualidades-governo-digital",
-    statement: `No contexto da modernização dos serviços públicos e da atuação da Dataprev, o avanço da plataforma Gov.br e da Estratégia de Governo Digital no Brasil tem como objetivo central:`,
-    options: [
-      "Centralizar e unificar o acesso aos serviços públicos digitais sob uma identidade digital cidadã única, segura e interoperável.",
-      "Privatizar a totalidade dos bancos de dados governamentais transferindo a custódia a empresas multinacionais estrangeiras.",
-      "Restringir a consulta a benefícios previdenciários e assistenciais exclusivamente a totens físicos instalados nas capitais.",
-      "Substituir todos os servidores públicos federais por assistentes virtuais baseados em IA sem supervisão humana.",
-      "Extinguir a exigência de identificação civil para qualquer solicitação de aposentadoria ou pensão."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): A Estratégia Federal de Governo Digital e a plataforma gov.br visam à desburocratização, integração de sistemas, simplificação e unificação do acesso do cidadão aos serviços públicos federais com segurança, autenticação robusta (níveis Bronze, Prata e Ouro) e interoperabilidade entre bases.`
-  },
-  {
-    id: 32,
-    subject: "Atualidades",
-    subtopic: "Inteligência Artificial e Ética no Setor Público",
-    theoryRef: "atualidades-ia-etica",
-    statement: `O uso crescente de algoritmos de Inteligência Artificial para análise e concessão de benefícios sociais e previdenciários impõe rigorosos debates éticos. O principal risco regulatório e social que a administração pública busca mitigar nesse contexto é:`,
-    options: [
-      "A total eliminação do consumo energético nos datacenters governamentais.",
-      "A reprodução e amplificação de vieses algorítmicos históricos que levem à discriminação e exclusão de parcelas vulneráveis da sociedade.",
-      "A necessidade de utilizar exclusivamente linguagens de programação de código fechado e proprietárias.",
-      "O excesso de transparência que possa inviabilizar o processamento em lote de solicitações simples.",
-      "A obrigatoriedade de conectar todos os modelos preditivos diretamente a redes sociais públicas."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): Em sistemas de IA aplicados a políticas públicas, o risco crítico reside no viés algorítmico (algorithmic bias), no qual dados históricos enviesados treinam modelos que perpetuam discriminações injustas contra minorias ou populações vulneráveis, colidindo com os princípios constitucionais da isonomia e da publicidade.`
-  },
-  {
-    id: 33,
-    subject: "Atualidades",
-    subtopic: "Inclusão Sociodigital e Previdência",
-    theoryRef: "atualidades-inclusao",
-    statement: `A despeito dos avanços em serviços digitais como o 'Meu INSS', estudos socioeconômicos apontam a 'brecha digital' (digital divide) como desafio à plena cidadania. Para assegurar o princípio da universalidade do atendimento público, recomenda-se que as estatais de TI:`,
-    options: [
-      "Encerrem sumariamente todos os canais de atendimento telefônico e balcões presenciais.",
-      "Adotem estratégias multicanal (omnichannel), mantendo suporte assistido e alternativas presenciais integradas para os excluídos digitais.",
-      "Exijam certificação digital paga (e-CPF) como requisito mandatório prévio para qualquer cidadão acessar benefícios.",
-      "Transfiram o custeio de dispositivos móveis para as instituições financeiras credenciadas.",
-      "Cobrem tarifas de serviço proporcionais à complexidade da requisição previdenciária."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): A inclusão sociodigital no setor público preconiza que a transformação digital não pode ser excludente. O Estado deve adotar modelo multicanal, garantindo atendimento presencial humanizado e canais telefônicos (como a Central 135) para cidadãos sem acesso à internet ou sem letramento digital.`
-  },
-  {
-    id: 34,
-    subject: "Atualidades",
-    subtopic: "Soberania de Dados e Infraestruturas Críticas",
-    theoryRef: "atualidades-soberania-dados",
-    statement: `A soberania de dados e a segurança de infraestruturas críticas nacionais envolvem a salvaguarda de dados previdenciários e fiscais de milhões de brasileiros. No desenho de arquiteturas de nuvem governamentais, essa preocupação se traduz prioritariamente por:`,
-    options: [
-      "Hospedar todas as bases de dados governamentais em servidores situados em jurisdições sem acordos diplomáticos com o Brasil.",
-      "Implementar modelos de nuvem soberana (nuvem de governo ou nuvem privada/híbrida) sob jurisdição legal brasileira e conformidade com normas do GSI/PR.",
-      "Permitir que operadores terceirizados comercializem metadados anonimizados para compensar custos de hospedagem.",
-      "Abandonar rotinas de criptografia em repouso para acelerar a indexação de bases públicas.",
-      "Eliminar cópias de segurança em datacenters geograficamente distribuídos."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA): A soberania de dados no contexto de estatais como a Dataprev exige que dados sensíveis dos cidadãos fiquem sujeitos à jurisdição da legislação brasileira, com controle estrito sobre acesso, residência de dados e adesão aos padrões e normas do Gabinete de Segurança Institucional da Presidência da República (GSI/PR).`
-  },
-  {
-    id: 35,
-    subject: "Atualidades",
-    subtopic: "Cadastro Único e Interoperabilidade",
-    theoryRef: "atualidades-cadunico",
-    statement: `O Cadastro Único para Programas Sociais do Governo Federal (CadÚnico) e o Cadastro Nacional de Informações Sociais (CNIS), operados tecnologicamente pela Dataprev, exemplificam o conceito de interoperabilidade de dados governamentais cujo principal efeito prático é:`,
-    options: [
-      "Permitir o cruzamento automatizado de bases públicas para conceder ou auditar benefícios com maior precisão e redução de fraudes.",
-      "Impedir que ministérios compartilhem informações orçamentárias entre si.",
-      "Exigir que o cidadão apresente certidões em papel autenticadas em cartório a cada nova solicitação de benefício.",
-      "Substituir o número de CPF por um código alfanumérico rotativo gerado a cada 30 dias.",
-      "Vincular o recebimento de pensões à aquisição de títulos da dívida pública."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA): A interoperabilidade das bases (como CNIS e CadÚnico) permite o cruzamento ágil e automatizado de vínculos de trabalho, renda e composição familiar. Isso qualifica o processo de concessão, evita pagamentos indevidos, combate fraudes e desonera o cidadão de comprovar dados que o próprio Estado já detém (princípio do "Once-Only").`
-  },
-
-  // =========================================================================
-  // BLOC 5: LEGISLAÇÃO DE SEGURANÇA E PROTEÇÃO DE DADOS (Questões 36 a 40)
-  // =========================================================================
-  {
-    id: 36,
-    subject: "Legislação & Proteção de Dados",
-    subtopic: "LGPD - Princípios Fundamentais (Art. 6º)",
-    theoryRef: "leg-lgpd-principios",
-    statement: `A Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018), em seu art. 6º, estabelece os princípios que devem nortear as atividades de tratamento de dados pessoais.
-
-O princípio segundo o qual o tratamento de dados pessoais deve ser limitado ao MÍNIMO NECESSÁRIO para a realização de suas finalidades, com abrangência dos dados pertinentes, proporcionais e não excessivos, denomina-se:`,
-    options: [
-      "Finalidade",
-      "Adequação",
-      "Necessidade",
-      "Livre acesso",
-      "Responsabilização e prestação de contas"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Conforme o Art. 6º, inciso III da LGPD:
-- "Necessidade: limitação do tratamento ao mínimo necessário para a realização de suas finalidades, com abrangência dos dados pertinentes, proporcionais e não excessivos em relação às finalidades do tratamento de dados (minimização de dados)."
-Distinções importantes:
-- Finalidade: realização do tratamento para propósitos legítimos, específicos e informados.
-- Adequação: compatibilidade do tratamento com as finalidades informadas.
-- Livre acesso: garantia aos titulares de consulta facilitada e gratuita sobre a forma e a duração do tratamento.`
-  },
-  {
-    id: 37,
-    subject: "Legislação & Proteção de Dados",
-    subtopic: "LGPD - Dados Sensíveis e Bases Legais (Arts. 7º e 11)",
-    theoryRef: "leg-lgpd-bases",
-    statement: `De acordo com a Lei nº 13.709/2018 (LGPD), assinale a opção que indica um DADO PESSOAL SENSÍVEL:`,
-    options: [
-      "Endereço de e-mail institucional corporativo.",
-      "Número de inscrição no Cadastro de Pessoas Físicas (CPF).",
-      "Dado referente à filiação a sindicato ou a organização de caráter religioso.",
-      "Número de telefone celular de contato comercial.",
-      "Remuneração mensal e cargo ocupado em órgão público."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Nos termos do Art. 5º, inciso II da LGPD, dado pessoal sensível é expressamente definido como:
-"dado pessoal sobre origem racial ou étnica, convicção religiosa, opinião política, filiação a sindicato ou a organização de caráter religioso, filosófico ou político, dado referente à saúde ou à vida sexual, dado genético ou biométrico, quando vinculado a uma pessoa natural."
-CPF, e-mail, telefone e remuneração são dados pessoais comuns (não sensíveis na definição legal).`
-  },
-  {
-    id: 38,
-    subject: "Legislação & Proteção de Dados",
-    subtopic: "LGPD - Agentes de Tratamento e Encarregado (DPO)",
-    theoryRef: "leg-lgpd-agentes",
-    statement: `No tocante aos agentes de tratamento de dados e ao encarregado previstos na LGPD, assinale a afirmativa CORRETA:`,
-    options: [
-      "O Encarregado (DPO) deve responder com seu patrimônio pessoal solidariamente por qualquer incidente de vazamento de dados ocorrido na empresa.",
-      "O Operador é a pessoa natural ou jurídica a quem competem as decisões fundamentais referentes ao tratamento de dados pessoais.",
-      "O Encarregado atua como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional de Proteção de Dados (ANPD).",
-      "A administração pública federal está dispensada da indicação de Encarregado de proteção de dados.",
-      "O Controlador realiza o tratamento de dados exclusivamente em nome e por conta e risco do Operador."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Segundo o Art. 41 da LGPD, o Encarregado pelo tratamento de dados pessoais (DPO) atua como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional de Proteção de Dados (ANPD), além de orientar os funcionários sobre boas práticas de privacidade.
-
-Erros das demais:
-- A: O encarregado não responde solidariamente com seu patrimônio pelos danos (a responsabilidade é do controlador e/ou operador).
-- B: Quem toma as decisões é o CONTROLADOR, e não o operador.
-- D: Órgãos e entidades públicas são OBRIGADOS a indicar encarregado.
-- E: É o Operador que realiza o tratamento em nome do Controlador, e não o inverso.`
-  },
-  {
-    id: 39,
-    subject: "Legislação & Proteção de Dados",
-    subtopic: "Marco Civil da Internet (Lei nº 12.965/2014)",
-    theoryRef: "leg-marco-civil",
-    statement: `O Marco Civil da Internet (Lei nº 12.965/2014) regulamenta a guarda e o fornecimento de registros de conexão e de aplicações de internet.
-
-Em relação à guarda de registros de conexão (IP, data e hora de início e término), a lei impõe aos administradores de sistema autônomo (provedores de conexão) a obrigação de mantê-los sob sigilo e em ambiente controlado pelo prazo de:`,
-    options: [
-      "30 dias.",
-      "6 meses.",
-      "1 ano.",
-      "5 anos.",
-      "Indefinidamente, sem possibilidade de expurgo."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Atenção à clássica distinção cobrada pela FGV no Marco Civil da Internet:
-- Registros de CONEXÃO (Art. 13): devem ser guardados pelo provedor de conexão pelo prazo de 1 (UM) ANO.
-- Registros de ACESSO A APLICAÇÕES de internet (Art. 15): devem ser guardados pelos provedores de aplicação comerciais pelo prazo de 6 (SEIS) MESES.`
-  },
-  {
-    id: 40,
-    subject: "Legislação & Proteção de Dados",
-    subtopic: "Lei de Acesso à Informação (LAI - Lei nº 12.527/2011)",
-    theoryRef: "leg-lai",
-    statement: `Nos termos da Lei de Acesso à Informação (LAI - Lei nº 12.527/2011), as informações públicas sob a custódia do Estado podem ter seu acesso temporariamente restringido mediante classificação nos graus ultrassecreto, secreto e reservado.
-
-Os prazos MÁXIMOS de restrição de acesso para cada um desses graus são, respectivamente:`,
-    options: [
-      "10 anos, 5 anos e 2 anos.",
-      "25 anos, 15 anos e 5 anos.",
-      "30 anos, 20 anos e 10 anos.",
-      "50 anos, 25 anos e 10 anos.",
-      "15 anos, 10 anos e 5 anos."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Conforme o Art. 24, § 1º da Lei nº 12.527/2011 (LAI):
-Os prazos máximos de restrição de acesso vigoram a partir da data de produção do documento:
-I - Ultrassecreta: até 25 anos;
-II - Secreta: até 15 anos;
-III - Reservada: até 5 anos.
-(Mnemônico clássico: 25 - 15 - 5).`
-  },
-
-  // =========================================================================
-  // BLOC 6: CONHECIMENTOS ESPECÍFICOS DE TI (Questões 41 a 70)
-  // =========================================================================
-  {
-    id: 41,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Engenharia de Software - Princípios SOLID",
-    theoryRef: "esp-solid",
-    statement: `Um desenvolvedor sênior na Dataprev refatorou uma classe que realizava simultaneamente a validação dos dados de um benefício, o cálculo do valor financeiro, a persistência no banco de dados e a geração do comprovante em formato PDF.
-
-Ao decompor essa classe em quatro classes menores e especializadas, o desenvolvedor aplicou com precisão o princípio:`,
-    options: [
-      "Open/Closed Principle (OCP)",
-      "Single Responsibility Principle (SRP)",
-      "Liskov Substitution Principle (LSP)",
-      "Interface Segregation Principle (ISP)",
-      "Dependency Inversion Principle (DIP)"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-O Princípio da Responsabilidade Única (SRP - Single Responsibility Principle), formulado por Robert C. Martin (Uncle Bob), preceitua que: "Uma classe deve ter apenas um, e somente um, motivo para mudar". Ao separar a persistência, o cálculo, a validação e a formatação do PDF em classes distintas, garantiu-se que cada componente possua apenas uma única responsabilidade coesa.`
-  },
-  {
-    id: 42,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Padrões de Projeto GoF - Padrões de Criação",
-    theoryRef: "esp-gof-criacao",
-    statement: `No desenvolvimento de um subsistema de mensageria da Dataprev, é imperativo garantir que exista exatamente UMA ÚNICA INSTÂNCIA de uma classe de conexão com o broker durante todo o ciclo de vida da aplicação, fornecendo um ponto de acesso global a ela.
-
-O padrão de projeto de criação do GoF indicado para esse cenário é o:`,
-    options: [
-      "Factory Method",
-      "Abstract Factory",
-      "Singleton",
-      "Builder",
-      "Prototype"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-O padrão Singleton (GoF) tem por propósito:
-"Garantir que uma classe tenha apenas uma instância e fornecer um ponto de acesso global para ela". Isso é tradicionalmente implementado com um construtor privado, uma variável estática interna guardando a instância e um método público estático (ex.: 'getInstance()').`
-  },
-  {
-    id: 43,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Padrões de Projeto GoF - Padrões Estruturais",
-    theoryRef: "esp-gof-estruturais",
-    statement: `Um novo módulo de folha de pagamento precisa interagir com um serviço legado de cálculo de alíquotas que possui uma interface incompatível com a arquitetura moderna adotada pela Dataprev. Não é viável alterar o código do serviço legado.
-
-Qual padrão estrutural do GoF permite converter a interface da classe legada na interface esperada pelos clientes modernos, permitindo que classes com interfaces incompatíveis trabalhem juntas?`,
-    options: [
-      "Adapter",
-      "Decorator",
-      "Composite",
-      "Flyweight",
-      "Proxy"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA):
-O padrão Adapter (também conhecido como Wrapper) do GoF converte a interface de uma classe em outra interface esperada pelos clientes. O Adapter permite que classes trabalhem em conjunto mesmo que possuam interfaces incompatíveis que, de outro modo, não poderiam interagir.`
-  },
-  {
-    id: 44,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Padrões de Projeto GoF - Padrões Comportamentais",
-    theoryRef: "esp-gof-comportamentais",
-    statement: `Em um mecanismo de cálculo de concessão de aposentadoria, existem diferentes regras de transição (Pedágio 50%, Pedágio 100%, Pontos, Idade Mínima). A aplicação deve permitir que esses algoritmos de cálculo variem independentemente dos clientes que os utilizam, podendo ser intercambiados em tempo de execução.
-
-O padrão comportamental que encapsula cada família de algoritmos em classes separadas e as torna intercambiáveis é o:`,
-    options: [
-      "Observer",
-      "Strategy",
-      "Command",
-      "State",
-      "Template Method"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-O padrão Strategy (GoF) define uma família de algoritmos, encapsula cada um deles e os torna intercambiáveis. O Strategy permite que o algoritmo varie independentemente dos clientes que o utilizam, eliminando longas estruturas condicionais ('switch-case' ou 'if-else') e aderindo ao princípio Open/Closed.`
-  },
-  {
-    id: 45,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Arquitetura de Microsserviços e DDD",
-    theoryRef: "esp-microsservicos",
-    statement: `Na decomposição de uma aplicação monolítica legada para arquitetura de microsserviços orientada a Domain-Driven Design (DDD), a fronteira lógica e conceitual na qual um modelo de domínio específico é aplicável e seus termos possuem significado inequívoco e delimitado é denominada:`,
-    options: [
-      "Shared Kernel",
-      "Bounded Context (Contexto Delimitado)",
-      "Anticorruption Layer",
-      "Ubiquitous Database",
-      "Service Mesh Boundary"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-No DDD (Domain-Driven Design), de Eric Evans, um Bounded Context (Contexto Delimitado) é a fronteira explícita dentro da qual um modelo de domínio é aplicável. Dentro desse limite, cada conceito e termo da Linguagem Ubíqua tem um significado exato e consistente, sendo a unidade ideal para guiar a delimitação de um microsserviço.`
-  },
-  {
-    id: 46,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Transações Distribuídas e Padrão Saga",
-    theoryRef: "esp-saga-pattern",
-    statement: `Em uma arquitetura de microsserviços onde transações ACID globais de duas fases (2PC - Two-Phase Commit) são desaconselhadas devido a gargalos de latência e acoplamento, a integridade dos dados entre serviços ao longo de uma transação de negócios que engloba múltiplos serviços é tipicamente gerenciada pelo:`,
-    options: [
-      "Padrão Saga (por orquestração ou coreografia), utilizando transações locais e transações compensatórias em caso de falha.",
-      "Padrão Active-Active Replication com bloqueio distribuído em tempo de leitura.",
-      "Uso de triggers automáticos no banco relacional mestre acoplados via rede física.",
-      "Bloqueio pessimista de tabelas em todos os bancos simultaneamente até o commit final.",
-      "Padrão Singleton Distribuído baseado em sincronização de mutex de sistema operacional."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA):
-O Padrão Saga é a solução padrão para transações distribuídas em microsserviços. Ele executa uma sequência de transações locais em cada serviço. Se uma etapa falhar, o Saga aciona uma série de transações compensatórias (compensating transactions) que desfazem as alterações efetuadas pelas etapas anteriores, garantindo a consistência eventual sem bloquear recursos.`
-  },
-  {
-    id: 47,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Resiliência em Microsserviços - Circuit Breaker",
-    theoryRef: "esp-circuit-breaker",
-    statement: `O padrão de estabilidade e resiliência Circuit Breaker (Disjuntor) possui três estados principais de operação. Quando a taxa de falhas consecutivas em requisições a um serviço externo ultrapassa um limiar predefinido, o disjuntor transita para o estado:`,
-    options: [
-      "FECHADO (Closed), encaminhando todas as chamadas normalmente.",
-      "ABERTO (Open), falhando imediatamente as chamadas subsequentes sem sobrecarregar o serviço com falha.",
-      "SEMI-ABERTO (Half-Open), recusando qualquer nova requisição de teste.",
-      "BLOQUEADO (Locked), reiniciando o pod automaticamente via Kubernetes.",
-      "ISOLADO (Quarantined), apagando os registros do banco de dados de cache."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Estados do Circuit Breaker:
-- CLOSED (Fechado): Estado normal, requisições passam livremente.
-- OPEN (Aberto): Quando o número de falhas atinge o limite de erro, o circuito se abre. Todas as requisições falham imediatamente (Fast Fail) ou vão para um fallback, sem tentar chamar o serviço com falha, permitindo que ele se recupere.
-- HALF-OPEN (Semiaberto): Após um tempo de espera, permite a passagem de um número limitado de requisições de teste para verificar se o serviço se recuperou.`
-  },
-  {
-    id: 48,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "APIs RESTful e Códigos HTTP",
-    theoryRef: "esp-rest-http",
-    statement: `No desenho de APIs RESTful, a IDEMPOTÊNCIA significa que múltiplas requisições idênticas consecutivas produzem o mesmo efeito no estado do servidor que uma única requisição.
-
-Assinale a opção que apresenta um método HTTP estritamente IDEMPOTENTE:`,
-    options: [
-      "POST",
-      "PUT",
-      "PATCH (quando usado para operações de incremento relativo)",
-      "CONNECT",
-      "PROPFIND"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Na especificação RFC 7231 e 9110 do protocolo HTTP:
-- Métodos Idempotentes: GET, HEAD, PUT, DELETE, OPTIONS, TRACE. Fazer uma requisição PUT com o mesmo payload 1 vez ou 10 vezes resultará no mesmo estado final do recurso no servidor.
-- Métodos Não Idempotentes: POST (cada envio cria um novo recurso subordinado diferente).`
-  },
-  {
-    id: 49,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Java e Spring Boot - Inversão de Controle e Anotações",
-    theoryRef: "esp-spring-boot",
-    statement: `No framework Spring Boot, a anotação utilizada para indicar que uma classe é um componente especializado na camada de acesso e persistência a dados (geralmente DAO/Repositório), habilitando a tradução automática de exceções nativas de persistência para a hierarquia do Spring, é:`,
-    options: [
-      "@Component",
-      "@Controller",
-      "@Service",
-      "@Repository",
-      "@Configuration"
-    ],
-    correctAnswer: 3, // D
-    explanation: `Gabarito Oficial Comentado:
-Alternativa D (CORRETA):
-No ecossistema Spring:
-- @Repository: estereótipo especializado para a camada de persistência/acesso a dados. Além de registrar o bean no container IoC, habilita a tradução automática de exceções de banco de dados (PersistenceExceptionTranslationPostProcessor).
-- @Service: camada de regras de negócio.
-- @Controller / @RestController: camada web/endpoints.
-- @Configuration: classes de configuração de beans.`
-  },
-  {
-    id: 50,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "JPA / Hibernate e Desempenho (Problema N+1)",
-    theoryRef: "esp-jpa-hibernate",
-    statement: `Em aplicações Java com JPA e Hibernate, o problema de desempenho conhecido como 'Consulta N+1' (N+1 Query Problem) ocorre tipicamente quando:`,
-    options: [
-      "O banco de dados excede o limite de conexões ativas no pool HikariCP.",
-      "A aplicação carrega uma lista de N entidades principais e, em seguida, dispara N consultas SQL adicionais separadas para carregar os relacionamentos de cada uma dessas entidades.",
-      "O identificador de chave primária gerado por SEQUENCE atinge o limite máximo de um tipo INTEGER.",
-      "A transação é finalizada com rollback devido a um timeout de rede na conexão JDBC.",
-      "O Hibernate bloqueia N threads simultâneas devido a um deadlock em nível de linha."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-O problema N+1 ocorre quando a aplicação executa 1 consulta inicial para buscar uma coleção de N registros e, para cada um dos N registros obtidos, executa mais 1 consulta subordinada para buscar os relacionamentos associados (geralmente associado a Lazy Loading ou chamadas sem 'JOIN FETCH'). O total de consultas geradas é 1 + N, degradando drasticamente o desempenho. Resolve-se com 'JOIN FETCH', EntityGraphs ou BatchSize.`
-  },
-  {
-    id: 51,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "DevOps & Docker - Dockerfile e Multi-Stage Build",
-    theoryRef: "esp-docker-build",
-    statement: `Para gerar imagens de contêiner Docker leves, seguras e com superfície de ataque mínima para produção, a melhor prática recomendada que permite compilar o código em um estágio rico em SDK e ferramentas, copiando para a imagem final apenas o artefato binário executável e um runtime mínimo, é:`,
-    options: [
-      "O uso de Multi-Stage Builds (construção em múltiplos estágios) com múltiplas instruções FROM.",
-      "A inserção de instruções apt-get install de todos os compiladores na camada final da imagem.",
-      "A execução do contêiner com o privilégio root e modo --privileged habilitado.",
-      "O armazenamento permanente das credenciais de compilação em variáveis de ambiente ENV na imagem.",
-      "A inclusão do código-fonte completo e da pasta .git dentro do contêiner de produção."
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA):
-O Multi-Stage Build permite separar o ambiente de build (onde são necessários compiladores pesados, maven, gradle, gcc) do ambiente de execução de produção. Na imagem final, usa-se uma imagem base enxuta (como Alpine ou Distroless) e copia-se apenas o binário/jar compilado (usando 'COPY --from=build-stage'), reduzindo o tamanho de gigabytes para dezenas de megabytes e eliminando ferramentas de compilação que representam vulnerabilidade.`
-  },
-  {
-    id: 52,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Docker - Volumes e Persistência",
-    theoryRef: "esp-docker-volumes",
-    statement: `No Docker, qual mecanismo de persistência é totalmente GERENCIADO pelo próprio Docker, isolado da estrutura de diretórios do host e recomendado como a forma padrão para persistir dados gerados por contêineres em ambientes de produção?`,
-    options: [
-      "Bind Mounts",
-      "Named Volumes (Volumes Nomeados)",
-      "tmpfs Mounts",
-      "UnionFS Layers voláteis",
-      "Loopback Devices"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Os Volumes Nomeados (Named Volumes) são criados e gerenciados integralmente pelo Docker (armazenados em '/var/lib/docker/volumes/' no Linux). Eles não dependem da estrutura de pastas do sistema hospedeiro, facilitam backup e migração, e são a estratégia recomendada para produção.
-- Bind Mounts dependem da estrutura exata de caminhos do host.
-- tmpfs mounts persistem apenas na memória RAM (voláteis).`
-  },
-  {
-    id: 53,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Kubernetes - Conceitos Fundamentais e Pods",
-    theoryRef: "esp-k8s-conceitos",
-    statement: `No Kubernetes (K8s), a MENOR unidade básica computacional que pode ser criada, implantada e gerenciada no cluster, representando uma ou mais instâncias de contêineres fortemente acoplados que compartilham o mesmo namespace de rede e volumes de armazenamento, é o:`,
-    options: [
-      "ReplicaSet",
-      "Deployment",
-      "Pod",
-      "DaemonSet",
-      "StatefulSet"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-O Pod é a menor unidade implantável de computação que pode ser criada e gerenciada no Kubernetes. Um Pod encapsula um ou mais contêineres (ex.: aplicação principal e sidecar), compartilhando o mesmo endereço IP, portas de rede e volumes de armazenamento.`
-  },
-  {
-    id: 54,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Kubernetes - Serviços de Rede (ClusterIP, NodePort, LoadBalancer)",
-    theoryRef: "esp-k8s-services",
-    statement: `Um arquiteto de software precisa expor um conjunto de Pods de um banco de dados interno APENAS para os demais microsserviços dentro do próprio cluster Kubernetes, sem nenhuma exposição para fora da rede interna do cluster.
-
-O tipo de Kubernetes Service adequado e adotado como PADRÃO para esse fim é o:`,
-    options: [
-      "NodePort",
-      "LoadBalancer",
-      "ClusterIP",
-      "ExternalName",
-      "Ingress Gateway"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-O ClusterIP é o tipo de Service padrão no Kubernetes. Ele atribui um IP interno virtual acessível exclusivamente dentro do cluster, garantindo isolamento de rede e impedindo que o serviço seja alcançado de fora do cluster.`
-  },
-  {
-    id: 55,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Kubernetes - Health Checks (Liveness, Readiness, Startup)",
-    theoryRef: "esp-k8s-probes",
-    statement: `No Kubernetes, a sonda (probe) configurada pelo engenheiro de DevOps para indicar se um contêiner está PRONTO PARA RECEBER TRÁFEGO DE REDE de clientes, de modo que o Service não envie requisições a ele enquanto sua inicialização não estiver concluída, é a:`,
-    options: [
-      "Liveness Probe",
-      "Readiness Probe",
-      "Startup Probe",
-      "Termination Probe",
-      "Healthz Sweep Probe"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Diferença crucial entre probes no Kubernetes:
-- Readiness Probe: Determina se o Pod está pronto para aceitar requisições de rede. Se falhar, o Pod NÃO é reiniciado; seus endpoints são apenas removidos do Service até que volte a ficar pronta.
-- Liveness Probe: Determina se o contêiner está vivo. Se falhar repetidamente, o kubelet MATA o contêiner e o reinicia.
-- Startup Probe: Utilizada para aplicações lentas na inicialização para desabilitar as outras duas até que a aplicação suba.`
-  },
-  {
-    id: 56,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "CI/CD - Pipelines e Práticas DevSecOps",
-    theoryRef: "esp-cicd-devsecops",
-    statement: `Em uma esteira moderna de Integração Contínua e Entrega Contínua (CI/CD) com abordagem DevSecOps, a prática de analisar o código-fonte estático em busca de vulnerabilidades de segurança conhecidas e falhas de conformidade, ANTES mesmo da compilação e execução do código, é denominada:`,
-    options: [
-      "DAST (Dynamic Application Security Testing)",
-      "SAST (Static Application Security Testing)",
-      "Fuzz Testing",
-      "Chaos Engineering",
-      "Penetration Testing"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-- SAST (Static Application Security Testing): Teste de segurança estático ("white-box"). Analisa o código-fonte ou binários estaticamente em repouso na esteira de CI, sem executar a aplicação (ex.: SonarQube, Checkmarx).
-- DAST (Dynamic Application Security Testing): Teste dinâmico ("black-box"), que analisa a aplicação em execução enviando ataques reais pela rede (ex.: OWASP ZAP).`
-  },
-  {
-    id: 57,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Estratégias de Deploy (Canary e Blue-Green)",
-    theoryRef: "esp-deploy-strategies",
-    statement: `A estratégia de implantação de software na qual uma nova versão é liberada para uma pequena porcentagem de usuários reais (ex.: 5%), permitindo monitorar métricas de erro e desempenho em produção antes de rotear gradualmente todo o tráfego restante, é denominada:`,
-    options: [
-      "Recreate Deployment",
-      "Blue-Green Deployment",
-      "Canary Deployment",
-      "Big Bang Deployment",
-      "Shadow Deployment"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-O Canary Deployment consiste em disponibilizar a nova versão do software para uma fração controlada do tráfego ou dos usuários (o "canário na mina de carvão"). Se as métricas forem satisfatórias, o percentual de tráfego é ampliado até 100%; se surgirem anomalias, o tráfego é revertido de imediato, mitigando o raio de explosão (blast radius) de eventuais bugs.`
-  },
-  {
-    id: 58,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Bancos de Dados Relacionais - Propriedades ACID",
-    theoryRef: "esp-bd-acid",
-    statement: `Em um Sistema de Gerenciamento de Banco de Dados Relacional (SGBDR), a propriedade que assegura que uma transação é tratada como uma unidade indivisível de trabalho, ou seja, ou todas as suas instruções SQL são executadas com sucesso ou nenhuma alteração é persistida (tudo ou nada), é a:`,
-    options: [
-      "Atomicidade",
-      "Consistência",
-      "Isolamento",
-      "Durabilidade",
-      "Idempotência"
-    ],
-    correctAnswer: 0, // A
-    explanation: `Gabarito Oficial Comentado:
-Alternativa A (CORRETA):
-Propriedades ACID:
-- Atomicidade (A): Todas as operações da transação são concluídas com sucesso ou, se houver falha, todas as operações realizadas até então são desfeitas (rollback). Princípio do "tudo ou nada".
-- Consistência (C): A transação leva o banco de um estado válido a outro estado válido, respeitando regras de integridade.
-- Isolamento (I): Transações concorrentes não interferem umas nas outras.
-- Durabilidade (D): Dados confirmados via commit permanecem gravados mesmo em caso de falha de energia.`
-  },
-  {
-    id: 59,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Níveis de Isolamento de Transações ANSI SQL",
-    theoryRef: "esp-bd-isolamento",
-    statement: `No padrão ANSI/ISO SQL, o nível de isolamento mais restritivo que previne Leituras Sujas (Dirty Reads), Leituras Não-Repetíveis (Non-Repeatable Reads) e Leituras Fantasma (Phantom Reads), simulando a execução sequencial estrita das transações concorrentes, é o:`,
-    options: [
-      "Read Uncommitted",
-      "Read Committed",
-      "Repeatable Read",
-      "Serializable",
-      "Snapshot Isolation"
-    ],
-    correctAnswer: 3, // D
-    explanation: `Gabarito Oficial Comentado:
-Alternativa D (CORRETA):
-Níveis de isolamento ANSI SQL e anomalias permitidas:
-1. Read Uncommitted: Permite Dirty Read, Non-repeatable Read e Phantom Read.
-2. Read Committed: Previne Dirty Read; permite Non-repeatable Read e Phantom Read.
-3. Repeatable Read: Previne Dirty Read e Non-repeatable Read; permite Phantom Read (salvo em SGBDs com MVCC como PostgreSQL).
-4. Serializable: Previne TODAS as anomalias, garantindo o mais alto nível de isolamento.`
-  },
-  {
-    id: 60,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Modelagem Relacional e Índices de Banco de Dados",
-    theoryRef: "esp-bd-indices",
-    statement: `Ao otimizar uma consulta SQL que executa filtros por faixa de valores (ex.: 'WHERE data_nascimento BETWEEN '1960-01-01' AND '1980-12-31''), o tipo de índice de banco de dados mais indicado e amplamente utilizado pelos SGBDs relacionais por manter os dados ordenados em estrutura balanceada é o:`,
-    options: [
-      "Índice Hash",
-      "Índice B-Tree (Árvore B / B+Tree)",
-      "Índice Bitmap",
-      "Índice GiST com R-Tree",
-      "Índice Invertido Full-Text"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Os índices baseados em B-Tree (e B+Tree) mantêm os nós ordenados, permitindo buscas pontuais de igualdade (=) e buscas por faixa (BETWEEN, >, <, >=, <=) com complexidade temporal O(log N). Os índices Hash são extremamente rápidos para igualdade (=), mas totalmente ineficientes para consultas por faixa, pois a função hash não preserva a ordenação.`
-  },
-  {
-    id: 61,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Bancos de Dados NoSQL e Teorema CAP",
-    theoryRef: "esp-nosql-cap",
-    statement: `O Teorema CAP, formulado por Eric Brewer, afirma que em um sistema distribuído é impossível garantir simultaneamente mais de duas das seguintes propriedades:`,
-    options: [
-      "Confiabilidade, Autenticidade e Precisão.",
-      "Consistência, Disponibilidade e Tolerância a Partições de Rede.",
-      "Concorrência, Agilidade e Performance.",
-      "Atomicidade, Criptografia e Portabilidade.",
-      "Continuidade, Acessibilidade e Privacidade."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-O Teorema CAP define as três garantias fundamentais de sistemas distribuídos:
-- C (Consistency - Consistência): Todo nó lê o dado mais recentemente escrito.
-- A (Availability - Disponibilidade): Toda requisição recebe uma resposta não-errônea, sem garantia de ser a mais recente.
-- P (Partition Tolerance - Tolerância a Partição): O sistema continua operando mesmo se pacotes de rede forem perdidos entre os nós.
-Em redes do mundo real onde partições ocorrem inevitavelmente, o sistema deve escolher entre Consistência (CP) ou Disponibilidade (AP).`
-  },
-  {
-    id: 62,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Qualidade de Software - Pirâmide de Testes",
-    theoryRef: "esp-piramide-testes",
-    statement: `De acordo com o modelo clássico da Pirâmide de Testes (proposto por Mike Cohn e popularizado por Martin Fowler), a base da pirâmide deve ser composta pela maior quantidade de testes porque eles são rápidos de executar, possuem menor custo de manutenção e fornecem feedback instantâneo. Esses testes da base são os:`,
-    options: [
-      "Testes de Interface de Usuário (End-to-End / E2E)",
-      "Testes de Carga e Estresse",
-      "Testes de Integração de Serviços",
-      "Testes Unitários (Unit Tests)",
-      "Testes Manuais de Aceitação de Usuário"
-    ],
-    correctAnswer: 3, // D
-    explanation: `Gabarito Oficial Comentado:
-Alternativa D (CORRETA):
-A Pirâmide de Testes é estruturada em:
-1. Base (maior volume, alta velocidade, baixo custo): Testes Unitários.
-2. Camada Intermediária (volume moderado): Testes de Integração.
-3. Topo (menor volume, mais lentos, alto custo e mais frágeis): Testes de Ponta a Ponta (E2E / UI).`
-  },
-  {
-    id: 63,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Metodologia de Testes - TDD",
-    theoryRef: "esp-tdd",
-    statement: `No Desenvolvimento Guiado por Testes (TDD - Test-Driven Development), o ciclo fundamental de iteração conhecido como 'Red-Green-Refactor' consiste em:`,
-    options: [
-      "Escrever o código completo -> documentar a API -> testar manualmente na produção.",
-      "Escrever um teste que falha (Red) -> escrever a quantidade mínima de código para o teste passar (Green) -> refatorar e melhorar o código mantendo o teste passando (Refactor).",
-      "Identificar bugs em produção (Red) -> aplicar hotfix sem testes (Green) -> reiniciar os servidores (Refactor).",
-      "Compilar com warnings (Red) -> corrigir erros de sintaxe (Green) -> commitar na branch main (Refactor).",
-      "Executar análise estática SAST (Red) -> auditar vulnerabilidades (Green) -> implantar o container (Refactor)."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-O ciclo Red-Green-Refactor do TDD (Kent Beck) consiste em:
-1. RED: Escreva um teste unitário para uma funcionalidade antes de ela existir e veja-o falhar.
-2. GREEN: Escreva o código mais simples e rápido possível que faça esse teste passar.
-3. REFACTOR: Melhore o design do código, elimine duplicações e aumente a clareza, garantindo que o teste continue verde.`
-  },
-  {
-    id: 64,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Segurança da Informação - Criptografia Simétrica e Assimétrica",
-    theoryRef: "esp-criptografia",
-    statement: `No que se refere aos conceitos criptográficos utilizados para garantir confidencialidade e integridade em canais seguros como TLS/HTTPS, assinale a afirmativa CORRETA:`,
-    options: [
-      "A criptografia simétrica utiliza um par de chaves pública e privada matematicamente correlacionadas.",
-      "O algoritmo AES (Advanced Encryption Standard) é um exemplo consagrado de algoritmo de chave assimétrica.",
-      "A criptografia assimétrica (como RSA e ECC) utiliza um par de chaves, onde a chave pública é distribuída livremente para criptografia e a chave privada é mantida sob sigilo para descriptografia.",
-      "Funções de resumo criptográfico (hash) como SHA-256 permitem reverter o hash de volta ao texto original com facilidade.",
-      "Chaves criptográficas simétricas não exigem nenhum canal seguro prévio para serem compartilhadas entre remetente e destinatário."
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-Na criptografia assimétrica (chave pública), há um par de chaves: a Chave Pública (que qualquer um pode conhecer para cifrar a mensagem ou validar uma assinatura) e a Chave Privada (que só o proprietário possui para decifrar a mensagem ou assinar digitalmente).
-
-Erros das demais:
-- A: Criptografia simétrica usa uma ÚNICA chave secreta compartilhada para cifrar e decifrar.
-- B: AES é o padrão universal de criptografia SIMÉTRICA (em blocos).
-- D: Funções de Hash são unidirecionais ("one-way"); não é possível reverter o hash para o dado de origem.
-- E: O compartilhamento da chave simétrica exige um canal seguro ou o uso de algoritmos assimétricos (ex.: Diffie-Hellman).`
-  },
-  {
-    id: 65,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Segurança de Software - OWASP Top 10",
-    theoryRef: "esp-owasp",
-    statement: `A vulnerabilidade clássica catalogada pela OWASP na qual um atacante consegue manipular parâmetros de entrada não sanitizados de uma aplicação para alterar a estrutura de uma instrução SQL interpretada pelo banco de dados corporativo, obtendo acesso não autorizado a dados sigilosos, denomina-se:`,
-    options: [
-      "Cross-Site Scripting (XSS)",
-      "Cross-Site Request Forgery (CSRF)",
-      "SQL Injection (SQLi)",
-      "Server-Side Request Forgery (SSRF)",
-      "Buffer Overflow"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-SQL Injection (Injeção de SQL) ocorre quando dados fornecidos por usuários não confiáveis são concatenados diretamente em comandos SQL sem a devida sanitização ou sem o uso de Prepared Statements / consultas parametrizadas. O atacante injeta código SQL que altera a semântica da consulta original no banco de dados.`
-  },
-  {
-    id: 66,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Autenticação e Autorização - JWT e OAuth 2.0",
-    theoryRef: "esp-auth-jwt",
-    statement: `Um token JWT (JSON Web Token) compacto utilizado em arquiteturas REST é composto por três partes delimitadas por pontos (.) na seguinte ordem:`,
-    options: [
-      "Signature . Header . Payload",
-      "Header . Payload . Signature",
-      "Payload . Signature . Certificate",
-      "Issuer . Subject . Expiration",
-      "Public Key . Private Key . Secret"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-A especificação RFC 7519 do JWT estabelece que sua estrutura compacta é estritamente dividida em três partes codificadas em Base64URL separadas por pontos:
-1. Header: metadados do token (tipo "JWT" e algoritmo criptográfico como "HS256" ou "RS256").
-2. Payload: as claims (declarações/atributos do usuário como sub, exp, roles).
-3. Signature: assinatura criptográfica que garante que o token não foi adulterado.`
-  },
-  {
-    id: 67,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Metodologias Ágeis - Scrum Guide (Papéis e Cerimônias)",
-    theoryRef: "esp-scrum",
-    statement: `De acordo com o Scrum Guide oficial, qual evento tem duração máxima recomendada de 15 minutos, é realizado diariamente no mesmo horário e local, e tem como objetivo a inspeção do progresso rumo à Meta da Sprint pelos Desenvolvedores?`,
-    options: [
-      "Sprint Planning",
-      "Sprint Review",
-      "Daily Scrum",
-      "Sprint Retrospective",
-      "Backlog Refinement"
-    ],
-    correctAnswer: 2, // C
-    explanation: `Gabarito Oficial Comentado:
-Alternativa C (CORRETA):
-O Daily Scrum (Reunião Diária) é um evento de 15 minutos com timebox estrito para os Desenvolvedores do Scrum Team inspecionarem o progresso rumo à Meta da Sprint e adaptarem o Sprint Backlog conforme necessário, ajustando o plano de trabalho para as próximas 24 horas.`
-  },
-  {
-    id: 68,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Metodologias Ágeis - Definição de Pronto (DoD)",
-    theoryRef: "esp-dod-dor",
-    statement: `No framework Scrum, a 'Definição de Pronto' (Definition of Done - DoD) consiste em:`,
-    options: [
-      "Um acordo informal entre o Product Owner e o cliente sobre a data final de entrega do projeto.",
-      "A descrição formal do estado do Incremento quando atende às medidas de qualidade exigidas para o produto.",
-      "A estimativa de horas calculada individualmente para cada tarefa do Sprint Backlog.",
-      "A lista de impedimentos operacionais levantados pelo Scrum Master durante a Daily.",
-      "O contrato assinado pelo setor de compras que autoriza o pagamento dos fornecedores."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Segundo o Scrum Guide, a Definição de Pronto (Definition of Done) é uma descrição formal do estado do Incremento quando ele satisfaz as medidas de qualidade requeridas para o produto. No momento em que um item do Product Backlog atende à Definição de Pronto, nasce um Incremento utilizável e potencialmente liberável.`
-  },
-  {
-    id: 69,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Método Kanban - Limites de WIP e Métricas de Fluxo",
-    theoryRef: "esp-kanban",
-    statement: `No método Kanban, a prática central de limitar o Trabalho em Progresso (WIP - Work in Progress) em cada coluna do quadro visual tem como principal objetivo:`,
-    options: [
-      "Obrigar todos os desenvolvedores a trabalhar exclusivamente em horas extras.",
-      "Evitar a sobrecarga do sistema produtivo, expor gargalos de fluxo e reduzir o tempo de ciclo (Cycle Time).",
-      "Impedir que novos requisitos do cliente sejam aceitos durante o ano corrente.",
-      "Substituir todos os testes automatizados por inspeção manual de código.",
-      "Garantir que todas as tarefas tenham exatamente o mesmo tamanho em horas de esforço."
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-A limitação do WIP (Work In Progress) é o núcleo do Kanban. Fundamentada na Lei de Little, limitar o trabalho em andamento reduz o tempo de ciclo (Cycle Time), evita que os colaboradores alternem excessivamente de contexto (multitarefa prejudicial) e faz com que gargalos e bloqueios no fluxo se tornem visíveis imediatamente ("Pare de começar e comece a terminar").`
-  },
-  {
-    id: 70,
-    subject: "Conhecimentos Específicos de TI",
-    subtopic: "Governança de TI - ITIL v4 e Práticas de Serviço",
-    theoryRef: "esp-itil-v4",
-    statement: `Na biblioteca ITIL v4, a prática que tem por objetivo minimizar o impacto negativo de incidentes restaurando a operação normal do serviço o mais rapidamente possível, reduzindo a indisponibilidade percebida pelo usuário final, é o:`,
-    options: [
-      "Gerenciamento de Problemas (Problem Management)",
-      "Gerenciamento de Incidentes (Incident Management)",
-      "Habilitação de Mudança (Change Enablement)",
-      "Gerenciamento de Ativos de TI (IT Asset Management)",
-      "Gerenciamento de Nível de Serviço (Service Level Management)"
-    ],
-    correctAnswer: 1, // B
-    explanation: `Gabarito Oficial Comentado:
-Alternativa B (CORRETA):
-Diferença conceitual clássica e obrigatória em provas de concurso da FGV:
-- Gerenciamento de Incidentes: Tem como foco restaurar o serviço o mais rápido possível (solução de contorno/workaround imediato).
-- Gerenciamento de Problemas: Tem como foco identificar a causa-raiz (root cause) dos incidentes e prevenir a recorrência de novos incidentes.`
-  }
+class Cachorro extends Animal {
+    @Override
+    void emitirSom() {
+        System.out.println("Latido");
+    }
+}`,
+  ),
+  q(
+    52,
+    T,
+    "Desenvolvimento mobile",
+    "No desenvolvimento de aplicativos móveis para Android e iOS, uma das abordagens mais comuns é o uso de frameworks que permitem o desenvolvimento multiplataforma, reduzindo o esforço de criação de código para cada sistema operacional. O framework popular para o desenvolvimento multiplataforma e que utiliza a linguagem Dart é chamado de",
+    ["Xamarin.", "Flutter.", "React Native.", "Ionic.", "SwiftUI."],
+    1,
+    "Flutter, do Google, usa Dart. React Native usa JavaScript/TypeScript, Xamarin usa C#, Ionic usa HTML/CSS/JS e SwiftUI é nativo de iOS, com Swift.",
+    "esp-plataformas",
+  ),
+  q(
+    53,
+    T,
+    "Inteligência artificial",
+    "A Inteligência Artificial (IA) é uma área da ciência da computação que visa desenvolver sistemas capazes de realizar tarefas que normalmente exigiriam inteligência humana.\nO conceito que está mais diretamente relacionado ao desenvolvimento de sistemas que aprendem com os dados e melhoram seu desempenho ao longo do tempo é o de",
+    [
+      "Algoritmo Genético.",
+      "Redes Neurais Artificiais.",
+      "Lógica Booleana.",
+      "Busca Heurística.",
+      "Programação Linear.",
+    ],
+    1,
+    "Redes neurais ajustam pesos a partir de dados de treinamento — é a definição de aprendizado de máquina. Algoritmo genético é otimização evolutiva, e as demais não aprendem com dados.",
+    "esp-plataformas",
+  ),
+  q(
+    54,
+    T,
+    "HTTPS",
+    "Em um ambiente corporativo, uma empresa de e-commerce precisa garantir a segurança das transações realizadas por seus clientes através de seu site. Para isso, o site utiliza o protocolo HTTPS, que combina o protocolo HTTP com uma camada adicional de segurança.\nAssinale a opção que apresenta a diferença entre os protocolos SSL e TLS no contexto de sua aplicação em comunicações seguras via HTTPS.",
+    [
+      "O SSL é mais seguro que o TLS, pois utiliza um algoritmo de criptografia mais avançado.",
+      "O TLS substitui o SSL, corrigindo vulnerabilidades encontradas nas versões anteriores do SSL e implementando melhorias de segurança.",
+      "O TLS e o SSL são intercambiáveis, pois ambos oferecem o mesmo nível de segurança, com a única diferença sendo a compatibilidade de alguns navegadores.",
+      "O HTTPS só funciona com o protocolo SSL, pois foi o primeiro protocolo desenvolvido para essa finalidade.",
+      "O SSL e o TLS são usados conjuntamente para garantir um nível de segurança adicional em transações bancárias, sendo o SSL utilizado para a autenticação e o TLS para a criptografia dos dados.",
+    ],
+    1,
+    "TLS é o sucessor do SSL e corrigiu vulnerabilidades das versões antigas (POODLE, DROWN). SSL 2.0 e 3.0 estão obsoletos; HTTPS hoje roda sobre TLS, apesar de o termo “SSL” sobreviver por inércia.",
+    "esp-seguranca",
+  ),
+  q(
+    55,
+    T,
+    "Arquiteturas",
+    "Em relação às arquiteturas hexagonal e de microsserviços, considere as seguintes afirmações:\nI. A arquitetura hexagonal, também chamada de Arquitetura de Portas e Adaptadores, visa separar a lógica de negócios das interfaces externas, permitindo uma fácil troca de implementações.\nII. Microsserviços são pequenos serviços que compartilham o mesmo banco de dados, promovendo maior acoplamento entre os módulos da aplicação para garantir a consistência dos dados.\nIII. A arquitetura monolítica pode ser distribuída, mas requer que todos os módulos sejam implantados como um conjunto, ao contrário dos microsserviços, que permitem a implantação independente de cada módulo.\n\nEstá correto o que se afirma em",
+    [
+      "I, apenas.",
+      "II, apenas.",
+      "III, apenas.",
+      "I e II, apenas.",
+      "I e III, apenas.",
+    ],
+    4,
+    "I e III estão corretas. II é falsa: microsserviços têm banco próprio por serviço justamente para reduzir acoplamento — compartilhar banco é o antipadrão shared database.",
+    "esp-arquitetura",
+  ),
+  q(
+    56,
+    T,
+    "DevOps",
+    "No contexto de DevOps, o conceito que descreve única e corretamente a prática de fornecer rapidamente uma nova versão de software ao ambiente de produção com o mínimo de interrupções para os usuários é chamado",
+    [
+      "Integração Contínua (CI).",
+      "Entrega Contínua (CD).",
+      "Gerenciamento de Configuração.",
+      "Monitoramento Contínuo.",
+      "Controle de Versão.",
+    ],
+    1,
+    "Continuous Delivery mantém o software sempre pronto para produção e automatiza a disponibilização frequente e segura de versões. A CI para no build e nos testes: não entrega nada ao usuário.",
+    "esp-engenharia",
+  ),
+  q(
+    57,
+    T,
+    "Testes",
+    "Em relação aos diferentes tipos de testes de software, considere as afirmativas abaixo:\nI. Os testes unitários focam em verificar o comportamento de unidades isoladas de código, como funções ou métodos, garantindo que funcionem conforme o esperado.\nII. Os testes de integração buscam verificar a interação entre diferentes módulos ou componentes do sistema, visando garantir que funcionem corretamente quando combinados.\nIII. O Test-Driven Development (TDD) segue a prática de escrever os testes antes do código funcional, incentivando a criação de código mais limpo e eficiente.\nIV. Os testes de usabilidade avaliam a experiência do usuário ao interagir com o software, verificando se a interface é intuitiva e eficiente.\n\nEstá correto o que se afirma em",
+    [
+      "I, II e IV, apenas.",
+      "I, III e IV, apenas.",
+      "II, III e IV, apenas.",
+      "I, II, III e IV.",
+      "I e III, apenas.",
+    ],
+    3,
+    "As quatro afirmativas descrevem corretamente os respectivos conceitos: unidade isolada, interação entre módulos, ciclo Red-Green-Refactor do TDD e avaliação da experiência do usuário.",
+    "esp-engenharia",
+  ),
+  q(
+    58,
+    T,
+    "XML, XSLT e JSON",
+    "Sobre as tecnologias XML, XSLT e JSON, assinale a opção correta.",
+    [
+      "O XML é mais eficiente que o JSON em termos de legibilidade e compactação de dados, sendo amplamente utilizado em aplicações web modernas devido à sua simplicidade.",
+      "O XSLT é uma linguagem utilizada para transformar documentos JSON em outro formato, como HTML ou XML.",
+      "O JSON é amplamente utilizado em APIs devido à sua estrutura simples e leve, que facilita o transporte de dados entre cliente e servidor.",
+      "Tanto XML quanto JSON têm suporte nativo para transformação de dados utilizando XSLT, o que facilita sua manipulação em diferentes formatos.",
+      "O XML e o JSON são formatos estritamente equivalentes em termos de expressividade e uso no armazenamento e transporte de dados em diferentes plataformas.",
+    ],
+    2,
+    "JSON é leve e simples, o que o tornou padrão em APIs REST. XML é mais verboso que JSON; XSLT transforma XML, não JSON; e os dois formatos não são estritamente equivalentes.",
+    "esp-arquitetura",
+  ),
+  q(
+    59,
+    T,
+    "Sistemas de suporte à decisão",
+    "Os Sistemas de Suporte à Decisão (SSDs) contribuem para gestores na tomada de decisões, utilizando dados, análises e algoritmos sofisticados. Eles auxiliam a enfrentar diferentes tipos de problemas, desde os muito bem definidos até os que exigem uma certa intuição e julgamento humano.\nAssinale a opção que representa corretamente a capacidade dos SSDs de lidar com diferentes tipos de problemas e decisões:",
+    [
+      "Os SSDs são adequados apenas para problemas estruturados, com procedimentos claramente definidos e automatizáveis.",
+      "Os SSDs são ideais para problemas não estruturados, em que a intuição e o julgamento humano são fundamentais.",
+      "Os SSDs são mais eficazes em problemas semiestruturados, combinando elementos estruturados e não estruturados.",
+      "Os SSDs podem ser aplicados a problemas estruturados, semiestruturados e não estruturados, oferecendo flexibilidade para apoiar decisões em diversos contextos.",
+      "Os SSDs são limitados a problemas específicos de uma única área funcional e não se aplicam a outros setores empresariais.",
+    ],
+    3,
+    "SSDs combinam dados, modelos e julgamento humano, e a flexibilidade é sua característica definidora. O próprio enunciado indica o espectro “desde os muito bem definidos até os que exigem intuição”, o que elimina as alternativas restritivas.",
+    "esp-dados",
+  ),
+  q(
+    60,
+    T,
+    "Data Warehouse",
+    "Em arquiteturas modernas de Data Warehousing, o processo de ETL é fundamental para preparar os dados de forma eficiente para a tomada de decisões estratégicas.\nEle é como uma ponte entre os sistemas e o Data Warehouse.\nNesse contexto, o principal objetivo do processo de ETL em uma solução de Data Warehousing é",
+    [
+      "criar visualizações e dashboards interativos para serem analisados em tempo real.",
+      "realizar análises estatísticas complexas nos dados, aplicando técnicas de modelagem preditiva para descobrir insights ocultos.",
+      "desenvolver e treinar modelos de machine learning, facilitando a previsão de tendências.",
+      "extrair dados de diversas fontes, transformá-los em um formato padronizado e consistente e carregá-los no Data Warehouse.",
+      "gerenciar o acesso e a segurança dos dados armazenados no Data Warehouse, garantindo assim que as informações estejam protegidas contra acessos não autorizados.",
+    ],
+    3,
+    "É a própria definição da sigla: Extract, Transform, Load. Dashboards, estatística e machine learning vêm depois, sobre os dados já integrados.",
+    "esp-dados",
+  ),
+  q(
+    61,
+    T,
+    "BI e qualidade de dados",
+    "Na hora de colocar um projeto de BI em prática, mapear as fontes de dados é primordial. É como preparar o terreno antes de construir: se a base não for sólida, a casa não fica em pé. É necessário garantir que as informações que vamos usar sejam úteis, relevantes e de alta qualidade. Nessa fase, seguir as boas práticas é fundamental para que os dados se encaixem nas necessidades do negócio e nos objetivos do projeto. Mas cuidado! Algumas abordagens podem acabar prejudicando tudo se não forem bem executadas.\nAssinale a opção que descreve uma prática **não recomendada** no mapeamento de fontes de dados para um projeto de BI.",
+    [
+      "Conduzir entrevistas abrangentes com usuários e stakeholders, utilizando técnicas de elicitação para extrair requisitos detalhados e garantir que todas as necessidades sejam consideradas.",
+      "Analisar documentos e sistemas existentes para identificar potenciais fontes de dados, assegurando que todo o repositório de informações relevantes seja considerado.",
+      "Coletar dados de todas as fontes disponíveis, sem discriminação, incluindo aqueles que apresentam inconsistências, incertezas ou baixa relevância, a fim de maximizar a quantidade de dados no sistema.",
+      "Avaliar a qualidade dos dados e sua adequação aos objetivos do projeto, garantindo que apenas informações precisas e confiáveis sejam utilizadas para gerar insights de valor.",
+      "Manter uma documentação detalhada das fontes de dados, incluindo suas características, formatos e relacionamentos, para garantir uma governança de dados eficaz e facilitar auditorias futuras.",
+    ],
+    2,
+    "Coletar tudo sem discriminação é garbage in, garbage out: aumenta custo, ruído e risco de decisão errada. As demais são boas práticas de mapeamento de fontes.",
+    "esp-dados",
+  ),
+  q(
+    62,
+    T,
+    "OWASP",
+    "A OWASP Top 10 é uma lista amplamente reconhecida das vulnerabilidades mais críticas em aplicações web, criada pela Open Web Application Security Project (OWASP). Atualizada periodicamente, a lista destaca as principais falhas de segurança que podem ser exploradas por atacantes. Com foco em orientar desenvolvedores e equipes de segurança, a OWASP Top 10 serve como uma referência essencial para proteger aplicações web e melhorar as práticas de desenvolvimento seguro.\nEm sua versão OWASP Top 10:2021, identificamos como uma categoria de vulnerabilidade",
+    [
+      "a falsificação de solicitação do lado do servidor.",
+      "a proteção da cadeia de suprimentos de software.",
+      "a proteção do ambiente de engenharia.",
+      "o treinamento operacional.",
+      "o uso de recursos de linguagens e frameworks.",
+    ],
+    0,
+    "Falsificação de solicitação do lado do servidor é o SSRF (Server-Side Request Forgery), categoria A10 da lista de 2021. As demais soam plausíveis, mas pertencem a outros frameworks, não ao Top 10.",
+    "esp-seguranca",
+  ),
+  q(
+    63,
+    T,
+    "Segurança X.800",
+    "A arquitetura de segurança X.800 para o modelo OSI define mecanismos de segurança próprios, que podem ser incorporados à uma camada de protocolo específica com o objetivo de oferecer serviços de segurança OSI, ou mecanismos de segurança disseminados, que não são específicos de uma camada ou serviço.\nAssinale a opção que indica um mecanismo de segurança específico.",
+    [
+      "Detecção de evento.",
+      "Funcionalidade confiável.",
+      "Preenchimento de tráfego.",
+      "Rótulo de segurança.",
+      "Trilha de auditoria de segurança.",
+    ],
+    2,
+    "Preenchimento de tráfego (traffic padding) é mecanismo específico, usado contra análise de tráfego. Detecção de evento, funcionalidade confiável, rótulo de segurança e trilha de auditoria são mecanismos disseminados.",
+    "esp-seguranca",
+  ),
+  q(
+    64,
+    T,
+    "Controle de acesso",
+    "As políticas de controle de acesso em sistemas computacionais são fundamentais para garantir a segurança e a integridade dos dados, regulando quem pode acessar, modificar ou interagir com recursos específicos.\nA política de controle de acesso cujo procedimento baseia-se na comparação de rótulos de segurança com autorizações que indicam quais entidades do sistema têm direito a acessar determinados recursos é a de controle de acesso",
+    [
+      "discricionário.",
+      "mandatório.",
+      "por entrada confiável.",
+      "por papéis.",
+      "por privilégio mínimo.",
+    ],
+    1,
+    "Rótulo de segurança comparado a autorização (clearance) é a mecânica do controle mandatório (MAC), aplicado pelo sistema segundo política central. No discricionário quem concede é o dono do recurso; privilégio mínimo é princípio, não política.",
+    "esp-seguranca",
+  ),
+  q(
+    65,
+    T,
+    "ETL e ELT",
+    "Sobre as técnicas de integração e ingestão de dados ETL (Extract, Transform, Load) e ELT (Extract, Load, Transform), assinale a opção **incorreta**.",
+    [
+      "Em ETL, os dados são transformados antes de serem carregados no sistema de destino.",
+      "ETL é mais adequado para sistemas de data warehouse tradicionais, onde a transformação de dados ocorre antes do carregamento.",
+      "ELT aproveita a capacidade de processamento do sistema de destino, transformando os dados após o carregamento.",
+      "ELT é mais eficiente em cenários onde o volume de dados é pequeno e o processamento pode ser feito fora do sistema de destino.",
+      "ETL pode ser mais lento em comparação ao ELT quando o sistema de destino tem alta capacidade de processamento.",
+    ],
+    3,
+    "A alternativa inverte o cenário: ELT é vantajoso com grandes volumes e transformação DENTRO do destino. Volume pequeno com processamento fora do destino descreve o ETL.",
+    "esp-dados",
+  ),
+  q(
+    66,
+    T,
+    "NoSQL",
+    "Sobre bancos de dados NoSQL, assinale a opção correta.",
+    [
+      "Bancos de dados NoSQL seguem estritamente as propriedades ACID.",
+      "Os bancos de dados NoSQL utilizam sempre o modelo relacional de dados.",
+      "Bancos de dados NoSQL são adequados para sistemas que exigem alta disponibilidade e escalabilidade horizontal.",
+      "Em um banco de dados NoSQL, os dados são sempre armazenados em forma de grafos.",
+      "Bancos de dados NoSQL são melhores para sistemas como ERPs e CRMs.",
+    ],
+    2,
+    "NoSQL atende bem sistemas distribuídos que exigem disponibilidade e escala horizontal, adotando em geral BASE em vez de ACID estrito. Ele não usa modelo relacional, não armazena sempre grafos, e ERP/CRM pedem integridade transacional forte, terreno do relacional.",
+    "esp-dados",
+  ),
+  q(
+    67,
+    T,
+    "OLAP e modelagem dimensional",
+    "Sobre as diferenças entre abordagens relacionais e multidimensionais em bancos de dados, assinale a opção correta.",
+    [
+      "A abordagem multidimensional é mais eficiente para transações online (OLTP) do que a abordagem relacional.",
+      "A abordagem relacional é usada principalmente em sistemas de apoio à decisão (OLAP), enquanto a multidimensional é usada em sistemas transacionais (OLTP).",
+      "A abordagem multidimensional facilita a análise de grandes volumes de dados organizados em dimensões e métricas.",
+      "Em uma abordagem relacional, os dados são organizados em cubos, o que facilita a análise em tempo real.",
+      "A abordagem multidimensional não suporta agregações de dados ou cálculos como somas e médias.",
+    ],
+    2,
+    "Dimensões, métricas e agregações são a base do OLAP. Cubo é conceito multidimensional, não relacional; e o multidimensional é justamente excelente em agregações — (E) inverte o fato.",
+    "esp-dados",
+  ),
+  q(
+    68,
+    T,
+    "Scrum Master",
+    "Uma equipe de desenvolvimento está trabalhando em um projeto importante usando Scrum. Durante o Daily Scrum, um dos desenvolvedores comenta que está com dificuldades para concluir uma tarefa e provavelmente não conseguirá terminá-la até o fim do Sprint. Diante disso, o Scrum Master sugere que a equipe pense em como reorganizar as tarefas para garantir que o objetivo do Sprint ainda seja alcançado.\nPara ajudar a equipe a continuar no caminho certo, o Scrum Master deve",
+    [
+      "redistribuir as tarefas por conta própria, sem envolver a equipe, para garantir que tudo seja concluído a tempo.",
+      "incentivar a equipe a discutir o problema e encontrar uma solução colaborativa, removendo qualquer obstáculo, mas sem interferir demais.",
+      "assumir a tarefa do desenvolvedor, garantindo que o prazo seja cumprido.",
+      "escalar o problema ao Product Owner, deixando que ele reorganize as prioridades e tarefas.",
+      "encerrar o Sprint mais cedo, já que a tarefa não será concluída.",
+    ],
+    1,
+    "O time é auto-gerenciável: cabe ao Scrum Master facilitar a discussão e remover impedimentos, não decidir pela equipe, assumir tarefas nem encerrar o Sprint.",
+    "esp-agil",
+  ),
+  q(
+    69,
+    T,
+    "Gestão híbrida",
+    "No contexto do gerenciamento de projetos, uma abordagem Ágil Híbrida é caracterizada por",
+    [
+      "utilizar exclusivamente metodologias ágeis em todos os aspectos do projeto.",
+      "combinar práticas ágeis com métodos tradicionais de gerenciamento de projetos para atender às necessidades específicas da equipe e do projeto.",
+      "adotar apenas as cerimônias do Scrum, sem considerar outros métodos.",
+      "implementar um plano fixo e detalhado antes de iniciar o projeto, sem revisões.",
+      "focar unicamente na documentação, ignorando a interação com a equipe.",
+    ],
+    1,
+    "Híbrido é justamente a combinação: governança e marcos em cascata com execução iterativa, conforme a necessidade do projeto e da equipe.",
+    "esp-agil",
+  ),
+  q(
+    70,
+    T,
+    "Planejamento de Sprint",
+    "A equipe de marketing resolveu mudar as coisas nessa eleição e escolheu usar o SCRUM. Na reunião de planejamento do Sprint, o coordenador de campanha (Product Owner) apresentou uma lista de tarefas essenciais: criar conteúdo para as redes sociais, produzir vídeos e organizar eventos locais. Um dos membros da equipe sugeriu que todas as tarefas fossem incluídas no Sprint, mas, dada a complexidade, não devem caber dentro do Sprint.\nAssinale a opção que indica como a equipe de marketing deveria lidar com a seleção das tarefas para o Sprint.",
+    [
+      "O membro da equipe está certo em querer incluir todas as tarefas, já que campanhas eleitorais são imprevisíveis e mudanças de última hora podem acontecer.",
+      "A equipe deve priorizar as tarefas que podem ser concluídas dentro do Sprint, levando em conta a capacidade de trabalho e o tempo disponível, para garantir que os objetivos mais importantes da campanha sejam alcançados.",
+      "O coordenador de campanha (Product Owner) deve decidir sozinho quais tarefas serão incluídas no Sprint, sem consultar o restante da equipe.",
+      "A equipe deve colocar o máximo de tarefas possível no Sprint para cobrir todas as frentes da campanha, mesmo que algumas não sejam finalizadas.",
+      "O Scrum Master deve adicionar mais tarefas ao Sprint durante o processo, se perceber que a equipe está avançando rápido demais.",
+    ],
+    1,
+    "O Sprint deve respeitar a capacidade do time e concentrar-se na Meta. O PO prioriza o backlog, mas quem dimensiona o que cabe são os Developers — e não se empurram itens novos no meio da Sprint.",
+    "esp-agil",
+  ),
 ];
+
+// Gabarito oficial FGV - ATI Desenvolvimento de Software, PROVA TIPO 4 (AZUL),
+// aplicada em 17/11/2024. Este é o caderno de onde as 70 questões foram transcritas.
+// As respostas ficam declaradas em cada questão acima; o bloco abaixo apenas CONFERE
+// que elas continuam batendo com o gabarito oficial — nunca as sobrescreve.
+const officialAnswerLetters =
+  "EACDDCACEDDABEBDECBE BCDADBBACCABCEDBECDA DCBABAAAEBCBBBEBDCDD CACBDCCBBB"
+    .replace(/\s+/g, "")
+    .split("");
+
+questionsData.forEach((question, index) => {
+  const answerLetter = officialAnswerLetters[index];
+  if (!answerLetter) return;
+  const expected = answerLetter.charCodeAt(0) - "A".charCodeAt(0);
+  if (question.correctAnswer !== expected) {
+    console.error(
+      `[gabarito] Questão ${question.id}: marcada ${String.fromCharCode(65 + question.correctAnswer)}, ` +
+        `oficial Tipo 4 é ${answerLetter}.`,
+    );
+  }
+});
