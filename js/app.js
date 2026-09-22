@@ -14,6 +14,7 @@
   const FONT_STORAGE_KEY = "dataprev_font_scale";
   // Tempo oficial do caderno FGV/DATAPREV: 4 horas, já incluída a marcação do cartão.
   const EXAM_TOTAL_SECONDS = 4 * 3600;
+  const PT_PROGRESS_KEY = "dataprev_pt_progress_v1";
 
   const state = {
     currentTab: "simulado",
@@ -30,6 +31,8 @@
     timerInterval: null,
     currentTheoryModuleId: "portugues",
     currentTheorySectionId: "portugues-interpretacao",
+    currentPtLessonId: "pt-1-1",
+    ptCompleted: new Set(), // ids das lições marcadas como estudadas
     fontScale: 1.0,
   };
 
@@ -53,6 +56,15 @@
           "--user-font-scale",
           `${state.fontScale}rem`,
         );
+      }
+
+      const savedPt = localStorage.getItem(PT_PROGRESS_KEY);
+      if (savedPt) {
+        const parsedPt = JSON.parse(savedPt);
+        state.ptCompleted = new Set(parsedPt.completed || []);
+        if (parsedPt.currentLessonId) {
+          state.currentPtLessonId = parsedPt.currentLessonId;
+        }
       }
 
       const savedData = localStorage.getItem(STATE_STORAGE_KEY);
@@ -646,6 +658,166 @@
     switchTab("teoria");
   }
 
+  // --- TRILHA DE PORTUGUÊS ---
+
+  // Lista plana de todas as lições, na ordem do currículo, para navegação.
+  function ptAllLessons() {
+    return portuguesTrilha.flatMap((nivel) =>
+      nivel.lessons.map((lesson) => ({ nivel, lesson })),
+    );
+  }
+
+  function ptFindLesson(lessonId) {
+    return ptAllLessons().find((e) => e.lesson.id === lessonId) || ptAllLessons()[0];
+  }
+
+  function ptProgressPercent() {
+    const total = ptAllLessons().length;
+    if (!total) return 0;
+    return Math.round((state.ptCompleted.size / total) * 100);
+  }
+
+  function savePtProgress() {
+    try {
+      localStorage.setItem(
+        PT_PROGRESS_KEY,
+        JSON.stringify({
+          completed: Array.from(state.ptCompleted),
+          currentLessonId: state.currentPtLessonId,
+        }),
+      );
+    } catch (e) {
+      console.warn("Erro ao salvar progresso de Português:", e);
+    }
+  }
+
+  function togglePtLesson(lessonId) {
+    if (state.ptCompleted.has(lessonId)) {
+      state.ptCompleted.delete(lessonId);
+    } else {
+      state.ptCompleted.add(lessonId);
+    }
+    savePtProgress();
+    renderPortuguesTab();
+    updateBadges();
+  }
+
+  function selectPtLesson(lessonId) {
+    state.currentPtLessonId = lessonId;
+    savePtProgress();
+    renderPortuguesTab();
+    window.scrollTo({ top: 120, behavior: "smooth" });
+  }
+
+  function navigatePtLesson(direction) {
+    const all = ptAllLessons();
+    const idx = all.findIndex((e) => e.lesson.id === state.currentPtLessonId);
+    const next = all[idx + direction];
+    if (next) selectPtLesson(next.lesson.id);
+  }
+
+  // Abre o simulado filtrado em uma questão específica citada pela lição.
+  function ptPraticar(questionId) {
+    focusQuestion(questionId);
+  }
+
+  function renderPortuguesTab() {
+    const sidebar = document.getElementById("ptSidebar");
+    const reader = document.getElementById("ptReader");
+    if (!sidebar || !reader) return;
+
+    const all = ptAllLessons();
+    const overall = ptProgressPercent();
+
+    sidebar.innerHTML = `
+      <div class="pt-progress-box">
+        <div class="pt-progress-head">
+          <strong>Seu progresso</strong>
+          <span>${state.ptCompleted.size} de ${all.length}</span>
+        </div>
+        <div class="focus-topic-bar"><span style="width:${overall}%"></span></div>
+      </div>
+      ${portuguesTrilha
+        .map((nivel) => {
+          const done = nivel.lessons.filter((l) =>
+            state.ptCompleted.has(l.id),
+          ).length;
+          return `
+        <div class="theory-nav-group">
+          <div class="theory-group-title">
+            ${nivel.icon} Nível ${nivel.level} · ${escapeHtml(nivel.title)}
+            <span class="pt-level-count">${done}/${nivel.lessons.length}</span>
+          </div>
+          ${nivel.lessons
+            .map(
+              (lesson) => `
+            <button
+              class="theory-nav-item ${state.currentPtLessonId === lesson.id ? "active" : ""}"
+              onclick="window.dataprevApp.selectPtLesson('${lesson.id}')">
+              <span class="pt-check ${state.ptCompleted.has(lesson.id) ? "done" : ""}">${state.ptCompleted.has(lesson.id) ? "✓" : "○"}</span>
+              ${escapeHtml(lesson.title)}
+            </button>
+          `,
+            )
+            .join("")}
+        </div>
+      `;
+        })
+        .join("")}
+    `;
+
+    const { nivel, lesson } = ptFindLesson(state.currentPtLessonId);
+    const idx = all.findIndex((e) => e.lesson.id === lesson.id);
+    const isDone = state.ptCompleted.has(lesson.id);
+
+    const praticaHtml = (lesson.questions || []).length
+      ? `
+      <div class="pt-practice">
+        <strong>Praticar na prova oficial:</strong>
+        ${lesson.questions
+          .map(
+            (qid) =>
+              `<button class="btn-theory-shortcut" onclick="window.dataprevApp.ptPraticar(${qid})">Questão ${qid}</button>`,
+          )
+          .join("")}
+      </div>`
+      : `<div class="pt-practice pt-practice-empty">Esta prova não trouxe questão deste tópico — mas a FGV cobra o tema com frequência.</div>`;
+
+    reader.innerHTML = `
+      <article class="theory-reader-card">
+        <div class="theory-header-box">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;">
+            <div>
+              <span class="badge badge-subject" style="margin-bottom:0.5rem;">${nivel.icon} Nível ${nivel.level} · ${escapeHtml(nivel.title)}</span>
+              <h2>${escapeHtml(lesson.title)}</h2>
+              <p>${escapeHtml(lesson.summary)}</p>
+            </div>
+            <button class="btn-nav ${isDone ? "btn-nav-prev" : "btn-nav-next"}"
+                    onclick="window.dataprevApp.togglePtLesson('${lesson.id}')">
+              ${isDone ? "✓ Estudado" : "Marcar como estudado"}
+            </button>
+          </div>
+        </div>
+
+        <div class="theory-content-body">
+          ${parseMarkdown(lesson.content)}
+        </div>
+
+        ${praticaHtml}
+
+        <div class="quiz-nav-footer">
+          <button class="btn-nav btn-nav-prev" onclick="window.dataprevApp.navigatePtLesson(-1)" ${idx === 0 ? "disabled" : ""}>
+            ← Anterior
+          </button>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Lição ${idx + 1} de ${all.length}</span>
+          <button class="btn-nav btn-nav-next" onclick="window.dataprevApp.navigatePtLesson(1)" ${idx >= all.length - 1 ? "disabled" : ""}>
+            Próxima →
+          </button>
+        </div>
+      </article>
+    `;
+  }
+
   function filterByTheorySubject(subjectTitle) {
     // Identifica nome da matéria correspondente
     let targetSubject = "all";
@@ -1014,6 +1186,8 @@
       renderCurrentQuestion();
     } else if (tabId === "teoria") {
       renderTheoryTab();
+    } else if (tabId === "portugues") {
+      renderPortuguesTab();
     } else if (tabId === "estatisticas") {
       renderStatsTab();
     } else if (tabId === "foco") {
@@ -1033,6 +1207,9 @@
     ).length;
     const errorsBadge = document.getElementById("badgeErrorsCount");
     if (errorsBadge) errorsBadge.textContent = errorCount;
+
+    const ptBadge = document.getElementById("badgePtProgress");
+    if (ptBadge) ptBadge.textContent = `${ptProgressPercent()}%`;
 
     const answeredCount = Object.keys(state.answers).length;
     const answeredBadge = document.getElementById("badgeSimuladoCount");
@@ -1279,6 +1456,10 @@
     selectTheorySection,
     jumpToTheory,
     focusQuestion,
+    selectPtLesson,
+    togglePtLesson,
+    navigatePtLesson,
+    ptPraticar,
     filterByTheorySubject,
     filterOnlyErrors,
     resetFilters,

@@ -1159,6 +1159,66 @@ body {
   border-bottom: 0;
 }
 
+/* --- Trilha de Português --- */
+.pt-progress-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.pt-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.pt-level-count {
+  float: right;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background-color: var(--bg-muted);
+  border-radius: var(--radius-full);
+  padding: 0.05rem 0.45rem;
+}
+
+.pt-check {
+  display: inline-block;
+  width: 1.1rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.pt-check.done {
+  color: var(--success);
+}
+
+.pt-practice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-secondary);
+  font-size: 0.9rem;
+}
+
+.pt-practice-empty {
+  border-left-color: var(--border-color);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 /* Barra de peso da área na aba Foco */
 .focus-topic-bar {
   height: 6px;
